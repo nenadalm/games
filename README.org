@@ -1,0 +1,6 @@
+#+ATTR_HTML: :alt License: MIT
+[[LICENSE][https://img.shields.io/badge/License-MIT-yellow.svg]]
+
+* Games
+
+Repository with various online games written in [[https://clojurescript.org/][ClojureScript]].

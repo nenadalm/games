@@ -1,0 +1,7 @@
+{:main app.core
+ :output-to "./resources/public/js/app.js"
+ :output-dir "./resources/public/js/compiled/app/out"
+ :asset-path "js/compiled/app/out"
+ :optimizations :advanced
+ :pretty-print false
+ :source-map "./resources/public/js/app.js.map"}
