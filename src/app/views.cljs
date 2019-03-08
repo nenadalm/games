@@ -54,8 +54,7 @@
           "Missiles should be launched off the car on key press and once they hit a letter, it should explode."]]
         [:li
          [:p
-          "When a letter explodes, car should move slowly towards the first letter and stop if it cannot move "
-          "further (car position will always be the same - letters will move on the canvas)."]]
+          "Statistics about typing (speed, accuracy, ...)."]]
         [:li
          [:p
-          "Statistics about typing (speed, accuracy, ...)"]]]]]]]])
+          "Support for keyboards activated by touch (phones, tablets, ...)."]]]]]]]])

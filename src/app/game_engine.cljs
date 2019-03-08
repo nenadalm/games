@@ -16,13 +16,24 @@
                                                          :height (.-height canvas)))))
     (assoc state :context nil)))
 
+(defn- unpause [state]
+  (assoc state
+         :running true
+         :prev-time (.now js/window.performance)))
+
 (defn- game-iter!
   "Runs single iteration of the game loop (update, render). Returns state."
   [state]
-  (let [game (game/process-inputs (:game state) (:inputs state))
+  (let [current-time (.now js/window.performance)
+        delta (- current-time (:prev-time state))
+        inputs (if (:running state)
+                 (conj (:inputs state) [:delta delta])
+                 (:inputs state))
+        game (game/process-inputs (:game state) inputs)
         updated-state (assoc state
                              :game game
-                             :inputs [])
+                             :inputs []
+                             :prev-time current-time)
         context (:context updated-state)]
     (when context
       (game/render game (:settings updated-state) context))
@@ -36,14 +47,16 @@
                            :running true
                            :settings settings
                            :game (game/init game)}
-                          (replace-canvas canvas))]
+                          (replace-canvas canvas)
+                          unpause)]
     (a/put! game-channel [:loop])
     initial-state))
 
 (defn init []
   (a/go-loop [state {:inputs []
-                     :running true
-                     :settings {}}]
+                     :running false
+                     :settings {}
+                     :prev-time nil}]
     (let [event (a/<! game-channel)]
       (case (first event)
         :input (recur (if (:running state)
@@ -53,7 +66,7 @@
         :start (recur (start-game! (second event)))
         :stop (recur (assoc state :running false))
         :pause (recur (assoc state :running false))
-        :resume (recur (assoc state :running true))
+        :resume (recur (unpause state))
         :replace-canvas (recur (replace-canvas state (second event)))
         (recur state)))))
 
