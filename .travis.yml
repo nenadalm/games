@@ -1,0 +1,32 @@
+language: java
+
+cache:
+  directories:
+    - '$HOME/.m2'
+
+env:
+  CLI_TOOLS_VERSION: '1.10.0.414'
+
+jobs:
+  include:
+    - stage: deploy
+      before_install:
+        # cli tools
+        - |
+          curl -O https://download.clojure.org/install/linux-install-${CLI_TOOLS_VERSION}.sh
+          chmod +x linux-install-${CLI_TOOLS_VERSION}.sh
+          sudo ./linux-install-${CLI_TOOLS_VERSION}.sh
+      install:
+        - 'clojure -Stree'
+      script:
+        - 'clojure -m figwheel.main --build-once min'
+        - 'rm -rf ./resources/public/js/compiled/'
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        keep-history: true
+        local-dir: resources/public
+        target-branch: gh-pages
+        on:
+          branch: master
