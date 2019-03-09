@@ -1,7 +1,10 @@
+^{:pre-build-hooks [build.core/pre-build-hook]
+  :post-build-hooks [build.core/post-build-hook]}
 {:main app.core
  :output-to "./resources/public/js/app.js"
  :output-dir "./resources/public/js/compiled/app/out"
  :asset-path "js/compiled/app/out"
  :optimizations :advanced
  :pretty-print false
- :source-map "./resources/public/js/app.js.map"}
+ :source-map "./resources/public/js/app.js.map"
+ :fingerprint true}
