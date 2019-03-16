@@ -26,12 +26,12 @@
                (next match-replacements))
         template-content))))
 
-(defn read-manifest []
+(defn- read-manifest []
   (-> manifest-path
       slurp
       edn/read-string))
 
-(defn delete-file-recursively [f]
+(defn- delete-file-recursively [f]
   (let [files (some-> f
                       clojure.java.io/file
                       (as-> file (if (.exists file) file nil))
@@ -40,7 +40,7 @@
     (doseq [file files]
       (clojure.java.io/delete-file file))))
 
-(defn update-template-fingerprints
+(defn- update-template-fingerprints
   "Takes care of cache busting by replacing js files in template with alternatives using fingerprints.
   (replaces e.g. app.js with app-111ce5a.js)"
   [manifest]

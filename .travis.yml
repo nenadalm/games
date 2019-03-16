@@ -23,8 +23,8 @@ jobs:
         - 'clojure -Stree'
       script:
         - 'yarn run build'
-        - 'echo "{:closure-defines {app.config/sentry-dsn \"${SENTRY_DSN}\" goog.DEBUG false}}" > options.cljs.edn'
-        - 'clojure -m figwheel.main --build-once min:options'
+        - 'clojure -m build.create-deploy-config'
+        - 'clojure -m figwheel.main --build-once deploy'
       deploy:
         provider: pages
         skip-cleanup: true
