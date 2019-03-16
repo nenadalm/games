@@ -10,6 +10,10 @@
 
 (set! *warn-on-infer* true)
 
+(defn dev-setup []
+  (when config/debug?
+    (println "dev mode")))
+
 (defn mount-root []
   (re-frame/clear-subscription-cache!)
   (reagent/render [views/app]
@@ -20,6 +24,7 @@
     (timbre/merge-config!
      {:appenders {:sentry (sentry-appender config/sentry-dsn)}})
     (.addEventListener js/window "error" (fn [^js/ErrorEvent e] (error (.-error e)))))
+  (dev-setup)
   (game-engine/init)
   (mount-root))
 

@@ -9,6 +9,7 @@
  :source-map "./resources/public/js/app.js.map"
  :fingerprint true
  :infer-externs true
+ :closure-defines {goog.DEBUG false}
  :foreign-libs [{:file "target/bundle.js"
                  :provides ["sentry"]
                  :global-exports {sentry Sentry}}]}
