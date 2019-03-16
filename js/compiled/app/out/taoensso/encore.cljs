@@ -35,7 +35,8 @@
     simple-ident?   qualified-ident?
     simple-symbol?  qualified-symbol?
     simple-keyword? qualified-keyword?
-    format update-in merge merge-with])
+    format update-in merge merge-with
+    memoize])
 
        
            
@@ -43,7 +44,6 @@
                             
                            
                                                       
-                                         
                                        
                                      
                               
@@ -63,7 +63,6 @@
    ;; [cljs.core.async  :as async]
    [cljs.reader]
    [cljs.tools.reader.edn :as edn]
-   [cljs.test             :as test :refer-macros [is]]
    ;;[goog.crypt.base64 :as base64]
    [goog.object         :as gobj]
    [goog.string         :as gstr]
@@ -83,10 +82,10 @@
    [taoensso.encore :as enc-macros :refer
     [have have! have? compile-if
      if-let if-some if-not when when-not when-some when-let cond defonce
-     cond! catching -cas! now-dt* now-udt* now-nano* -gc-now?
+     cond! catching -if-cas! now-dt* now-udt* now-nano* -gc-now?
      name-with-attrs -vol! -vol-reset! -vol-swap! deprecated new-object]]))
 
-(def encore-version [2 91 0])
+(def encore-version [2 107 0])
 
 (comment "ℕ ℤ ℝ ∞ ≠ ∈ ∉"
   (set! *unchecked-math* :warn-on-boxed)
@@ -128,7 +127,7 @@
 
                 
                                                                            
-                                         
+                                                       
                                                       
                        
                           
@@ -145,7 +144,7 @@
 
                  
                                                                             
-                                          
+                                                        
                                                   
                        
                           
@@ -198,7 +197,7 @@
 
                   
                                                                              
-                                         
+                                                       
                                             
                                                     
 
@@ -212,20 +211,27 @@
               
                                                                             
                                                                 
+                                                                    
+
                                                                      
+
                                                    
              
                                               
                           
                           
                 
-                                                                                  
-                                                                                  
-                                                   
-                                                   
-                                                   
-                                                   
-                                                   
+                                                                                          
+                                                                                          
+                                                           
+                                                           
+                                                           
+                                                           
+                                                           
+                                                                          
+                                                                          
+                                                                                           
+                                                                                           
                            
                                                                             
                                                                           
@@ -642,6 +648,13 @@
     (when (string? x)
       (if                                   (= x "") nil x)))
 
+  (defn as-?nblank-trim [x]
+    (when (string? x)
+      (let [s (str/trim x)]
+        (if                                   (= s "") nil s))))
+
+  (comment (as-?nblank-trim " foo  "))
+
   (defn as-?int #_as-?long [x]
     (cond (number? x) (long x)
           (string? x)
@@ -697,23 +710,24 @@
            {:given x :type (type x)})))
 
 (do
-  (defn as-nzero             [x] (or (as-?nzero      x) (-as-throw :nzero      x)))
-  (defn as-nblank            [x] (or (as-?nblank     x) (-as-throw :nblank     x)))
-  (defn as-nempty-str        [x] (or (as-?nempty-str x) (-as-throw :nempty-str x)))
-  (defn as-kw                [x] (or (as-?kw         x) (-as-throw :kw         x)))
-  (defn as-name              [x] (or (as-?name       x) (-as-throw :name       x)))
-  (defn as-qname             [x] (or (as-?qname      x) (-as-throw :qname      x)))
-  (defn as-email             [x] (or (as-?email      x) (-as-throw :email      x)))
-  (defn as-nemail            [x] (or (as-?nemail     x) (-as-throw :nemail     x)))
-  (defn as-udt         ^long [x] (or (as-?udt        x) (-as-throw :udt        x)))
-  (defn as-int         ^long [x] (or (as-?int        x) (-as-throw :int        x)))
-  (defn as-nat-int     ^long [x] (or (as-?nat-int    x) (-as-throw :nat-int    x)))
-  (defn as-pos-int     ^long [x] (or (as-?pos-int    x) (-as-throw :pos-int    x)))
-  (defn as-float     ^double [x] (or (as-?float      x) (-as-throw :float      x)))
-  (defn as-nat-float ^double [x] (or (as-?nat-float  x) (-as-throw :nat-float  x)))
-  (defn as-pos-float ^double [x] (or (as-?pos-float  x) (-as-throw :pos-float  x)))
-  (defn as-pval      ^double [x] (or (as-?pval       x) (-as-throw :pval       x)))
-  (defn as-bool              [x] (let [?b (as-?bool  x)] (if-not (nil? ?b) ?b (-as-throw :bool x)))))
+  (defn as-nzero             [x] (or (as-?nzero       x) (-as-throw :nzero       x)))
+  (defn as-nblank            [x] (or (as-?nblank      x) (-as-throw :nblank      x)))
+  (defn as-nblank-trim       [x] (or (as-?nblank-trim x) (-as-throw :nblank-trim x)))
+  (defn as-nempty-str        [x] (or (as-?nempty-str  x) (-as-throw :nempty-str  x)))
+  (defn as-kw                [x] (or (as-?kw          x) (-as-throw :kw          x)))
+  (defn as-name              [x] (or (as-?name        x) (-as-throw :name        x)))
+  (defn as-qname             [x] (or (as-?qname       x) (-as-throw :qname       x)))
+  (defn as-email             [x] (or (as-?email       x) (-as-throw :email       x)))
+  (defn as-nemail            [x] (or (as-?nemail      x) (-as-throw :nemail      x)))
+  (defn as-udt         ^long [x] (or (as-?udt         x) (-as-throw :udt         x)))
+  (defn as-int         ^long [x] (or (as-?int         x) (-as-throw :int         x)))
+  (defn as-nat-int     ^long [x] (or (as-?nat-int     x) (-as-throw :nat-int     x)))
+  (defn as-pos-int     ^long [x] (or (as-?pos-int     x) (-as-throw :pos-int     x)))
+  (defn as-float     ^double [x] (or (as-?float       x) (-as-throw :float       x)))
+  (defn as-nat-float ^double [x] (or (as-?nat-float   x) (-as-throw :nat-float   x)))
+  (defn as-pos-float ^double [x] (or (as-?pos-float   x) (-as-throw :pos-float   x)))
+  (defn as-pval      ^double [x] (or (as-?pval        x) (-as-throw :pval        x)))
+  (defn as-bool              [x] (let [?b (as-?bool   x)] (if-not (nil? ?b) ?b (-as-throw :bool x)))))
 
 ;;;; Validation
 
@@ -789,7 +803,25 @@
 
           
                                                              
-                                                                               
+                                                                              
+
+                    
+                 
+                         
+                                           
+             
+                       
+                                      
+                                            
+                   
+                               
+                     
+                                         
+                                          
+                   
+                       
+                
+                      
 
 ;;;; Volatiles
 
@@ -956,6 +988,10 @@
 
 (comment (exp-backoff 128))
 
+(defn chance [p] (< ^double (rand) (double p)))
+
+(comment (chance 0.25))
+
 ;;;; Misc
 
 ;; js/foo      - `foo` in global object/ns (depends on *target*)
@@ -1029,6 +1065,7 @@
     (defn vec* [x] (if (vector? x) x (vec x)))
     (defn set* [x] (if (set?    x) x (set x)))))
 
+       (defn oset [o k v] (gobj/set (if (nil? o) (js-obj) o) k v))
       
 (defn oget "Like `get` for JS objects, Ref. https://goo.gl/eze8hY."
   ([o k          ] (gobj/get o k nil))
@@ -1036,6 +1073,7 @@
 
       
 (let [sentinel (js-obj)]
+  ;; Could also use `gobg/getValueByKeys`
   (defn oget-in "Like `get-in` for JS objects."
     ([o ks] (oget-in o ks nil))
     ([o ks not-found]
@@ -1414,12 +1452,25 @@
   (def ^:private ^:const atom-tag 'clojure.lang.IAtom)
   (def ^:private ^:const atom-tag  'clojure.lang.Atom))
 
-                                     
-                         
+                                                         
+                                        
            
-                                                                      
-                                                       
-                           
+                                        
+                                                                              
+            
+                
+
+(defn reset!?
+  "Atomically swaps value of `atom_` to `val` and returns
+  true iff the atom's value actually changed. See also `reset-in!?`."
+  [atom_ val]
+  (loop []
+    (let [old @atom_]
+      (-if-cas! atom_ old val
+        (if (= old val) false true)
+        (recur)))))
+
+(comment (let [a (atom nil)] [(reset!? a "foo") (reset!? a "foo") (reset!? a "bar")]))
 
 (defn -swap-val!
   "Used internally by memoization utils."
@@ -1428,7 +1479,7 @@
     (let [m0 @atom_
           v1 (f (get m0 k))
           m1 (assoc  m0 k v1)]
-      (if (-cas! atom_ m0 m1)
+      (-if-cas! atom_ m0 m1
         v1
         (recur)))))
 
@@ -1439,7 +1490,7 @@
             s1  (f v0)
             sw? (instance? Swapped s1)
             v1  (if sw? (.-newv ^Swapped s1) s1)]
-        (if (-cas! atom_ v0 v1)
+        (-if-cas! atom_ v0 v1
           (if sw?
             (.-returnv ^Swapped s1)
             (return v0 v1))
@@ -1448,7 +1499,7 @@
   (defn- -reset-k0! [return atom_ v1]
     (loop []
       (let [v0 @atom_]
-        (if (-cas! atom_ v0 v1)
+        (-if-cas! atom_ v0 v1
           (return v0 v1)
           (recur)))))
 
@@ -1457,7 +1508,7 @@
       (loop []
         (let [m0 @atom_
               m1 (dissoc m0 k)]
-          (if (-cas! atom_ m0 m1)
+          (-if-cas! atom_ m0 m1
             (return (get m0 k not-found) :swap/dissoc)
             (recur))))
 
@@ -1470,7 +1521,7 @@
               m1  (if (kw-identical? v1 :swap/dissoc)
                     (dissoc m0 k)
                     (assoc  m0 k v1))]
-          (if (-cas! atom_ m0 m1)
+          (-if-cas! atom_ m0 m1
             (if sw?
               (.-returnv ^Swapped s1)
               (return v0 v1))
@@ -1480,7 +1531,7 @@
     (loop []
       (let [m0 @atom_
             m1 (assoc m0 k v1)]
-        (if (-cas! atom_ m0 m1)
+        (-if-cas! atom_ m0 m1
           (return (get m0 k not-found) v1)
           (recur)))))
 
@@ -1492,7 +1543,7 @@
           (loop []
             (let [m0 @atom_
                   m1 (fsplit-last (fn [ks lk] (dissoc-in m0 ks lk)) ks)]
-              (if (-cas! atom_ m0 m1)
+              (-if-cas! atom_ m0 m1
                 (return (get-in m0 ks not-found) :swap/dissoc)
                 (recur))))
 
@@ -1505,7 +1556,7 @@
                   m1  (if (kw-identical? v1 :swap/dissoc)
                         (fsplit-last (fn [ks lk] (dissoc-in m0 ks lk)) ks)
                         (do                     (assoc-in  m0 ks v1)))]
-              (if (-cas! atom_ m0 m1)
+              (-if-cas! atom_ m0 m1
                 (if sw?
                   (.-returnv ^Swapped s1)
                   (return v0 v1))
@@ -1520,7 +1571,7 @@
         (loop []
           (let [m0 @atom_
                 m1 (assoc-in m0 ks v1)]
-            (if (-cas! atom_ m0 m1)
+            (-if-cas! atom_ m0 m1
               (return (get-in m0 ks not-found) v1)
               (recur))))
 
@@ -1721,7 +1772,7 @@
 (deftype TickedCacheEntry [delay ^long udt ^long tick-lru ^long tick-lfu])
 
 (declare top)
-(defn memoize*
+(defn memoize
   "Like `core/memoize` but:
     * Often faster, depending on opts.
     * Prevents race conditions on writes.
@@ -1754,20 +1805,21 @@
 
              (when (-gc-now?)
                (let [latch                                  nil]
-                 (when (-cas! latch_ nil latch)
-                   (swap! cache_
-                     (fn [m]
-                       (persistent!
-                         (reduce-kv
-                           (fn [acc k ^SimpleCacheEntry e]
-                             (if (> (- instant (.-udt e)) ttl-ms)
-                               (dissoc! acc k)
-                               acc))
-                           (transient (or m {}))
-                           m))))
+                 (-if-cas! latch_ nil latch
+                   (do
+                     (swap! cache_
+                       (fn [m]
+                         (persistent!
+                           (reduce-kv
+                             (fn [acc k ^SimpleCacheEntry e]
+                               (if (> (- instant (.-udt e)) ttl-ms)
+                                 (dissoc! acc k)
+                                 acc))
+                             (transient (or m {}))
+                             m))))
 
-                                           
-                                            )))
+                                             
+                                              ))))
 
              (let [fresh? (kw-identical? a1 :mem/fresh)
                    args   (if fresh? (next args) args)
@@ -1808,40 +1860,41 @@
            (let [instant (if ttl-ms? (now-udt*) 0)]
              (when (-gc-now?)
                (let [latch                                  nil]
-                 (when (-cas! latch_ nil latch)
-                   ;; First prune ttl-expired stuff
-                   (when ttl-ms?
-                     (swap! cache_
-                       (fn [m]
-                         (persistent!
-                           (reduce-kv
-                             (fn [acc k ^TickedCacheEntry e]
-                               (if (> (- instant (.-udt e)) ttl-ms)
-                                 (dissoc! acc k)
-                                 acc))
-                             (transient (or m {}))
-                             m)))))
+                 (-if-cas! latch_ nil latch
+                   (do
+                     ;; First prune ttl-expired stuff
+                     (when ttl-ms?
+                       (swap! cache_
+                         (fn [m]
+                           (persistent!
+                             (reduce-kv
+                               (fn [acc k ^TickedCacheEntry e]
+                                 (if (> (- instant (.-udt e)) ttl-ms)
+                                   (dissoc! acc k)
+                                   acc))
+                               (transient (or m {}))
+                               m)))))
 
-                   ;; Then prune by ascending (worst) tick-sum:
-                   (let [snapshot @cache_
-                         n-to-gc  (- (count snapshot) cache-size)]
+                     ;; Then prune by ascending (worst) tick-sum:
+                     (let [snapshot @cache_
+                           n-to-gc  (- (count snapshot) cache-size)]
 
-                     (when (> n-to-gc 64)
-                       (let [ks-to-gc
-                             (top n-to-gc
-                               (fn [k]
-                                 (let [e ^TickedCacheEntry (get snapshot k)]
-                                   (+ (.-tick-lru e) (.-tick-lfu e))))
-                               (keys snapshot))]
+                       (when (> n-to-gc 64)
+                         (let [ks-to-gc
+                               (top n-to-gc
+                                 (fn [k]
+                                   (let [e ^TickedCacheEntry (get snapshot k)]
+                                     (+ (.-tick-lru e) (.-tick-lfu e))))
+                                 (keys snapshot))]
 
-                         (swap! cache_
-                           (fn [m]
-                             (persistent!
-                               (reduce (fn [acc in] (dissoc! acc in))
-                                 (transient (or m {})) ks-to-gc)))))))
+                           (swap! cache_
+                             (fn [m]
+                               (persistent!
+                                 (reduce (fn [acc in] (dissoc! acc in))
+                                   (transient (or m {})) ks-to-gc)))))))
 
-                                           
-                                            )))
+                                             
+                                              ))))
 
              (let [fresh?(kw-identical? a1 :mem/fresh)
                    args  (if fresh? (next args) args)
@@ -1863,17 +1916,17 @@
 
 (comment
   (do
-    (def f0 (memoize         (fn [& [x]] (if x x (Thread/sleep 600)))))
-    (def f1 (memoize*        (fn [& [x]] (if x x (Thread/sleep 600)))))
-    (def f2 (memoize* 5000   (fn [& [x]] (if x x (Thread/sleep 600)))))
-    (def f3 (memoize* 2 nil  (fn [& [x]] (if x x (Thread/sleep 600)))))
-    (def f4 (memoize* 2 5000 (fn [& [x]] (if x x (Thread/sleep 600))))))
+    (def f0 (clojure.core/memoize (fn [& [x]] (if x x (Thread/sleep 600)))))
+    (def f1 (memoize              (fn [& [x]] (if x x (Thread/sleep 600)))))
+    (def f2 (memoize 5000         (fn [& [x]] (if x x (Thread/sleep 600)))))
+    (def f3 (memoize 2 nil        (fn [& [x]] (if x x (Thread/sleep 600)))))
+    (def f4 (memoize 2 5000       (fn [& [x]] (if x x (Thread/sleep 600))))))
 
   (qb 1e5 (f0 :x) (f1 :x) (f2 :x) (f3 :x) (f4 :x))
   ;; [22.43 17.42 62.45 61.78 68.23]
 
-  (let [f0 (memoize  (fn [] (Thread/sleep 5) (print "f0\n")))
-        f1 (memoize* (fn [] (Thread/sleep 5) (print "f1\n")))]
+  (let [f0 (clojure.core/memoize (fn [] (Thread/sleep 5) (print "f0\n")))
+        f1 (memoize              (fn [] (Thread/sleep 5) (print "f1\n")))]
     (println "---")
     (dotimes [_ 10]
       (future (f1)) ; Never prints >once
@@ -1912,31 +1965,31 @@
 
               (when (and (not peek?) (-gc-now?))
                 (let [latch                                  nil]
-                  (when (-cas! latch_ nil latch)
+                  (-if-cas! latch_ nil latch
+                    (do
+                      (swap! reqs_
+                        (fn [reqs] ; {<rid> <entries>}
+                          (persistent!
+                            (reduce-kv
+                              (fn [acc rid entries]
+                                (let [new-entries
+                                      (reduce-kv
+                                        (fn [acc sid ^LimitEntry e]
+                                          (if-let [^LimitSpec s (get specs sid)]
+                                            (if (>= instant (+ (.-udt0 e) (.-ms s)))
+                                              (dissoc acc sid)
+                                              acc)
+                                            (dissoc acc sid)))
+                                        entries ; {<sid <LimitEntry>}
+                                        entries)]
+                                  (if (empty? new-entries)
+                                    (dissoc! acc rid)
+                                    (assoc!  acc rid new-entries))))
+                              (transient (or reqs {}))
+                              reqs))))
 
-                    (swap! reqs_
-                      (fn [reqs] ; {<rid> <entries>}
-                        (persistent!
-                          (reduce-kv
-                            (fn [acc rid entries]
-                              (let [new-entries
-                                    (reduce-kv
-                                      (fn [acc sid ^LimitEntry e]
-                                        (if-let [^LimitSpec s (get specs sid)]
-                                          (if (>= instant (+ (.-udt0 e) (.-ms s)))
-                                            (dissoc acc sid)
-                                            acc)
-                                          (dissoc acc sid)))
-                                      entries ; {<sid <LimitEntry>}
-                                      entries)]
-                                (if (empty? new-entries)
-                                  (dissoc! acc rid)
-                                  (assoc!  acc rid new-entries))))
-                            (transient (or reqs {}))
-                            reqs))))
-
-                                            
-                                             )))
+                                              
+                                               ))))
 
               ;; Need to atomically check if all limits pass before
               ;; committing to any n increments:
@@ -1989,7 +2042,7 @@
                               entries
                               specs)]
 
-                        (if (-cas! reqs_ reqs (assoc reqs rid new-entries))
+                        (-if-cas! reqs_ reqs (assoc reqs rid new-entries)
                           nil
                           (recur)))))))))]
 
@@ -2330,6 +2383,32 @@
     (into-str :a :b br :c (for [n (range 5)] [n br])
       (when true [:d :e [:f :g]]))))
 
+(defn const-str=
+  "Constant-time string equality checker.
+  Useful to prevent timing attacks, etc."
+  [s1 s2]
+  (when (and s1 s2)
+
+         
+              
+                                    
+                                     
+
+          
+    (let [v1 (vec   s1)
+          v2 (vec   s2)
+          n1 (count v1)]
+      (when (== n1 (count v2))
+        (reduce-n
+          (fn [acc idx]
+            (if (= (get v1 idx) (get v2 idx))
+              acc
+              false))
+          true
+          n1)))))
+
+(comment (const-str= "foo" "bar"))
+
 ;;;; Sorting
 
        (defn rcompare "Reverse comparator." [x y] (compare y x))
@@ -2406,39 +2485,43 @@
 (comment #=(ms   :years 88 :months 3 :days 33)
          #=(secs :years 88 :months 3 :days 33))
 
+                                                       
+                                      
+
+(comment (macroexpand '(msecs :weeks 3)))
+
                             
                                                                    
 
      
-                                  
-                                                 
-           
-                                 
-                   
-                         
-                                                 
-                                                    
-                      
-
-                  
-                                                   
-                                       
-                     
-
-                    
-                                                     
-                                         
-                                               
-                                            
-                           
-
-                           
-                                     
                           
-                                                                    
-                                                       
-                                                                 
+                                                 
+                           
+               
                      
+                                               
+                                                
+                  
+
+              
+                                               
+                                   
+                 
+
+                
+                                                 
+                                     
+                                           
+                                        
+                       
+
+                       
+                                 
+                      
+                                                                
+                                                   
+                                                             
+               
 
      
                          
@@ -2494,7 +2577,7 @@
                    
                                                   
                                                                                         
-                                                                          
+                                                                           
                         
                                            
                                                                                
@@ -2703,7 +2786,7 @@
               :else [uri (url-encode params)]))]
 
       (fn [uri method params]
-        (have? [:or nil? map?] params)
+        (have? [:or nil? map? js-form-data?] params)
         (case method
           :get  (url-encode      uri params)
           :post (adaptive-encode uri params)
@@ -2751,7 +2834,24 @@
                                  (get headers "x-requested-with" "XMLHTTPRequest"))]
               ;; `x-www-form-urlencoded`/`multipart/form-data` content-type
               ;; will be added by Closure if a custom content-type isn't provided
-              (clj->js headers))]
+              (clj->js headers))
+
+            ?progress-listener
+            (when-let [pf (:progress-fn opts)]
+              (.setProgressEventsEnabled xhr true)
+              (gevents/listen xhr goog.net.EventType/PROGRESS
+                              (fn [ev]
+                                (let [length-computable? (.-lengthComputable ev)
+                                      loaded (.-loaded ev)
+                                      total  (.-total  ev)
+                                      ?ratio (when (and length-computable? (not= total 0))
+                                               (/ loaded total))]
+                                  (pf
+                                   {:?ratio ?ratio
+                                    :length-computable? length-computable?
+                                    :loaded loaded
+                                    :total  total
+                                    :ev     ev})))))]
 
         (doto xhr
           (gevents/listenOnce goog.net.EventType/READY
@@ -2794,6 +2894,9 @@
 
                         [-status ?content-type ?content]))]
 
+                (when ?progress-listener
+                  (gevents/unlistenByKey ?progress-listener))
+
                 (callback-fn
                   {:raw-resp      resp
                    :xhr           xhr ; = (.-target resp)
@@ -2814,22 +2917,6 @@
                              goog.net.ErrorCode/TIMEOUT    :timeout}
                          (.getLastErrorCode xhr)
                          :unknown)))})))))
-
-        ;; Experimental, untested, undocumented opt
-        (when-let [pf (:progress-fn opts)]
-          (gevents/listen xhr goog.net.EventType/PROGRESS
-            (fn [ev]
-              (let [length-computable? (.-lengthComputable ev)
-                    loaded (.-loaded ev)
-                    total  (.-total  ev)
-                    ?ratio (when (and length-computable? (not= total 0))
-                             (/ loaded total))]
-                (pf
-                  {:?ratio ?ratio
-                   :length-computable? length-computable?
-                   :loaded loaded
-                   :total  total
-                   :ev     ev})))))
 
         (.setTimeoutInterval xhr (or timeout-ms 0)) ; nil = 0 = no timeout
         (when with-credentials?
@@ -2869,14 +2956,16 @@
 (comment (normalize-headers {:headers {"Foo1" "bar1" "FOO2" "bar2" "foo3" "bar3"}}))
 
      
+   
                                                                     
-                                                                                   
-                                                                                   
-                                                                               
-                                                                    
+                                                                                       
+                                                                                       
+                                                                                          
+                                                                                                                      
+                                                                                                                       
 
-(comment (merge-headers {:body "foo"} {"BAR" "baz"})
-         (merge-headers "foo"         {"bar" "baz"}))
+(comment (ring-merge-headers {"BAR" "baz"} {:body "foo"})
+         (ring-merge-headers {"bar" "baz"} "foo"        ))
 
      
                    
@@ -2890,28 +2979,28 @@
 
 (comment (redirect-resp :temp "/foo" "boo!"))
 
-(defn url-encode "Stolen from http://goo.gl/99NSR1"
+(defn url-encode "Based on https://goo.gl/fBqy6e"
                          
          [s]
   (when s
                       
-                                                                 
-                                      
-                                       
+                                                                       
+                                                                                               
+                                                                                               
+                
            (-> (str s)
                (js/encodeURIComponent s)
-               (str/replace "*" "%2A")
-               (str/replace "'" "%27"))))
-
-(comment (mapv url-encode ["foo+bar" 47]))
+               (str/replace "*" "%2A"))))
 
 (defn url-decode "Stolen from http://goo.gl/99NSR1"
   [s & [encoding]]
   (when s
-                                                               
-           (js/decodeURIComponent s)))
+                                                                           
+           (js/decodeURIComponent      (str s))))
 
-(comment (url-decode (url-encode "Hello there~*+")))
+(comment
+  (url-decode (url-encode "Hello there"))
+  (url-decode "hello+there"))
 
 (defn format-query-string [m]
   (let [param (fn [k v]  (str (url-encode (as-qname k)) "="
@@ -2980,7 +3069,7 @@
 ;;;; Stubs
 
 (do
-         (defn -new-stubfn_ [name] (-vol! (fn [& args]   (throw (ex-info "Attempting to call uninitialized stub fn" {:stub name :args args})))))
+         (defn -new-stubfn_ [name] (-vol! (fn [& args] (throw (ex-info (str "Attempting to call uninitialized stub fn (" name ")") {:stub name :args args})))))
          (defn -assert-unstub-val [f] (if (fn?     f) f (throw (ex-info "Unstub value must be a fn"     {:given f :type (type f)}))))
                                                                                                                                      
        
@@ -3002,27 +3091,49 @@
                                                                          
                                                           
        
-                       
-                                                            
+                        
+                                                             
+                                                              
                                          
                                                        
-                                                                       
                                                                                           
+                                                            
+                                                                         
                                                                      
-                                                                                                    
-                  
+                                                                    
+                                              
                     
-                                                               
+                                                                               
+                                                                          
+                                                
+                                                    
+                                                     
+                                                                           
+                                                                    
                                                               
-                                        
+                                      
 
 (comment
   (defn- -foo ^long [y] (* y y))
-  (macroexpand '(defstub foo))
+  (macroexpand-all '(defstub foo))
   (defstub foo)
   (unstub-foo -foo)
   (qb 1e6 (-foo 5) (foo 5)) ; [68.49 71.88]
   (meta (first (:arglists (meta #'foo)))))
+
+(do
+         (def cljs-thing "cljs-thing")
+                                     
+
+                                                          
+
+                     
+         (enc-macros/cljs-macro)
+
+         (enc-macros/defstub stub-test)
+                                       
+         (enc-macros/unstub-stub-test identity)
+                                               )
 
 ;;;; ns filter
 
@@ -3215,30 +3326,6 @@
   (binding [*foo* "bar"] ; Note no auto conveyance
     ((:fn (tf-state (after-timeout 200 (println *foo*) *foo*))))))
 
-;;;; Testing utils
-
-                
-                                                          
-                                                           
-                                                             
-
-(comment
-  (expect-let [foo {:a :A}] :A (:a foo))
-  (expect (thrown? Exception "foo")))
-
-(defn- fixture-map->fn [{:keys [before after] :or {before 'do after 'do}}]
-  `(fn [f#] (~before) (f#) (~after)))
-
-                                                           
-                           
-                                           
-                           
-           
-                                                         
-                                                                                 
-
-(comment (use-fixtures :each {:before (fn []) :after (fn [])}))
-
 ;;;; DEPRECATED
 
                     
@@ -3264,6 +3351,7 @@
   (def a1-memoize_     memoize_)
   (def memoize-1       memoize-last)
   (def memoize1        memoize-last)
+  (def memoize*        memoize)
   (def nnil?           some?)
   (def nneg-num?       nat-num?)
   (def nneg-int?       nat-int?)
@@ -3293,6 +3381,10 @@
   (def -vswapped       swapped-vec)
   (def -swap-k!        -swap-val!)
   (def update-in*      update-in)
+
+                                                                             
+                                                                             
+                                                                             
 
                                                                             
                                                                             

@@ -1652,7 +1652,7 @@ cljs.tools.reader.read_STAR_.cljs$lang$maxFixedArity = 6;
 /**
  * Reads the first object from an IPushbackReader.
  * Returns the object read. If EOF, throws if eof-error? is true.
- * Otherwise returns sentinel. If no stream is providen, *in* will be used.
+ * Otherwise returns sentinel. If no stream is provided, *in* will be used.
  * 
  * Opts is a persistent map with valid keys:
  *  :read-cond - :allow to process reader conditionals, or
@@ -1756,50 +1756,57 @@ cljs.tools.reader.read_string.cljs$lang$maxFixedArity = 2;
  *   Returns a vector containing the object read and the (whitespace-trimmed) string read.
  */
 cljs.tools.reader.read_PLUS_string = (function cljs$tools$reader$read_PLUS_string(var_args){
-var args__4736__auto__ = [];
-var len__4730__auto___14026 = arguments.length;
-var i__4731__auto___14027 = (0);
-while(true){
-if((i__4731__auto___14027 < len__4730__auto___14026)){
-args__4736__auto__.push((arguments[i__4731__auto___14027]));
+var G__14025 = arguments.length;
+switch (G__14025) {
+case 1:
+return cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
-var G__14028 = (i__4731__auto___14027 + (1));
-i__4731__auto___14027 = G__14028;
-continue;
-} else {
-}
 break;
+case 3:
+return cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$3((arguments[(0)]),(arguments[(1)]),(arguments[(2)]));
+
+break;
+case 2:
+return cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),(arguments[(1)]));
+
+break;
+default:
+throw (new Error(["Invalid arity: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(arguments.length)].join('')));
+
 }
-
-var argseq__4737__auto__ = ((((1) < args__4736__auto__.length))?(new cljs.core.IndexedSeq(args__4736__auto__.slice((1)),(0),null)):null);
-return cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),argseq__4737__auto__);
 });
 
-cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$variadic = (function (reader,args){
-var buf = (function (reader__$1){
-return cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.cst$kw$buffer.cljs$core$IFn$_invoke$arity$1(cljs.core.deref(reader__$1.frames)));
+cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$1 = (function (stream){
+return cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$3(stream,true,null);
 });
-var offset = cljs.core.count(buf(reader));
-var o = ((((cljs.tools.reader.reader_types.source_logging_reader_QMARK_(reader)) && ((!(cljs.tools.reader.impl.utils.whitespace_QMARK_(cljs.tools.reader.reader_types.peek_char(reader)))))))?cljs.tools.reader.reader_types.log_source_STAR_(reader,((function (buf,offset){
+
+cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$3 = (function (stream,eof_error_QMARK_,eof_value){
+var buf = (function (reader){
+return cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.cst$kw$buffer.cljs$core$IFn$_invoke$arity$1(cljs.core.deref(stream.frames)));
+});
+var offset = cljs.core.count(buf(stream));
+var o = ((((cljs.tools.reader.reader_types.source_logging_reader_QMARK_(stream)) && ((!(cljs.tools.reader.impl.utils.whitespace_QMARK_(cljs.tools.reader.reader_types.peek_char(stream)))))))?cljs.tools.reader.reader_types.log_source_STAR_(stream,((function (buf,offset){
 return (function (){
-if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2((1),cljs.core.count(args))){
-return cljs.tools.reader.read.cljs$core$IFn$_invoke$arity$2(cljs.core.first(args),reader);
-} else {
-return cljs.core.apply.cljs$core$IFn$_invoke$arity$3(cljs.tools.reader.read,reader,args);
-}
+return cljs.tools.reader.read.cljs$core$IFn$_invoke$arity$3(stream,eof_error_QMARK_,eof_value);
 });})(buf,offset))
-):((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2((1),cljs.core.count(args)))?cljs.tools.reader.read.cljs$core$IFn$_invoke$arity$2(cljs.core.first(args),reader):cljs.core.apply.cljs$core$IFn$_invoke$arity$3(cljs.tools.reader.read,reader,args)));
-var s = cljs.core.subs.cljs$core$IFn$_invoke$arity$2(buf(reader),offset).trim();
+):cljs.tools.reader.read.cljs$core$IFn$_invoke$arity$3(stream,eof_error_QMARK_,eof_value));
+var s = cljs.core.subs.cljs$core$IFn$_invoke$arity$2(buf(stream),offset).trim();
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [o,s], null);
 });
 
-cljs.tools.reader.read_PLUS_string.cljs$lang$maxFixedArity = (1);
-
-/** @this {Function} */
-cljs.tools.reader.read_PLUS_string.cljs$lang$applyTo = (function (seq14024){
-var G__14025 = cljs.core.first(seq14024);
-var seq14024__$1 = cljs.core.next(seq14024);
-var self__4717__auto__ = this;
-return self__4717__auto__.cljs$core$IFn$_invoke$arity$variadic(G__14025,seq14024__$1);
+cljs.tools.reader.read_PLUS_string.cljs$core$IFn$_invoke$arity$2 = (function (opts,stream){
+var buf = (function (reader){
+return cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.cst$kw$buffer.cljs$core$IFn$_invoke$arity$1(cljs.core.deref(stream.frames)));
 });
+var offset = cljs.core.count(buf(stream));
+var o = ((((cljs.tools.reader.reader_types.source_logging_reader_QMARK_(stream)) && ((!(cljs.tools.reader.impl.utils.whitespace_QMARK_(cljs.tools.reader.reader_types.peek_char(stream)))))))?cljs.tools.reader.reader_types.log_source_STAR_(stream,((function (buf,offset){
+return (function (){
+return cljs.tools.reader.read.cljs$core$IFn$_invoke$arity$2(opts,stream);
+});})(buf,offset))
+):cljs.tools.reader.read.cljs$core$IFn$_invoke$arity$2(opts,stream));
+var s = cljs.core.subs.cljs$core$IFn$_invoke$arity$2(buf(stream),offset).trim();
+return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [o,s], null);
+});
+
+cljs.tools.reader.read_PLUS_string.cljs$lang$maxFixedArity = 3;
 

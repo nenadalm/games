@@ -5,18 +5,18 @@ goog.require('cljs.core.constants');
 goog.require('goog.object');
 goog.require('app.game');
 app.games.typing_race.core.process_input = (function app$games$typing_race$core$process_input(data,input){
-var G__27081 = cljs.core.first(input);
-var G__27081__$1 = (((G__27081 instanceof cljs.core.Keyword))?G__27081.fqn:null);
-switch (G__27081__$1) {
+var G__25371 = cljs.core.first(input);
+var G__25371__$1 = (((G__25371 instanceof cljs.core.Keyword))?G__25371.fqn:null);
+switch (G__25371__$1) {
 case "delta":
-return cljs.core.update.cljs$core$IFn$_invoke$arity$3(data,cljs.core.cst$kw$distance,((function (G__27081,G__27081__$1){
+return cljs.core.update.cljs$core$IFn$_invoke$arity$3(data,cljs.core.cst$kw$distance,((function (G__25371,G__25371__$1){
 return (function (distance){
 var x__4219__auto__ = (0);
 var y__4220__auto__ = (function (){var movement = (cljs.core.cst$kw$speed.cljs$core$IFn$_invoke$arity$1(data) * cljs.core.second(input));
 return (distance - movement);
 })();
 return ((x__4219__auto__ > y__4220__auto__) ? x__4219__auto__ : y__4220__auto__);
-});})(G__27081,G__27081__$1))
+});})(G__25371,G__25371__$1))
 );
 
 break;
@@ -66,13 +66,13 @@ var this__4385__auto____$1 = this;
 return this__4385__auto____$1.cljs$core$ILookup$_lookup$arity$3(null,k__4386__auto__,null);
 });
 
-app.games.typing_race.core.TypingRace.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4387__auto__,k27084,else__4388__auto__){
+app.games.typing_race.core.TypingRace.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4387__auto__,k25374,else__4388__auto__){
 var self__ = this;
 var this__4387__auto____$1 = this;
-var G__27088 = k27084;
-switch (G__27088) {
+var G__25378 = k25374;
+switch (G__25378) {
 default:
-return cljs.core.get.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k27084,else__4388__auto__);
+return cljs.core.get.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k25374,else__4388__auto__);
 
 }
 });
@@ -81,10 +81,10 @@ app.games.typing_race.core.TypingRace.prototype.cljs$core$IKVReduce$_kv_reduce$a
 var self__ = this;
 var this__4404__auto____$1 = this;
 return cljs.core.reduce.cljs$core$IFn$_invoke$arity$3(((function (this__4404__auto____$1){
-return (function (ret__4407__auto__,p__27089){
-var vec__27090 = p__27089;
-var k__4408__auto__ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__27090,(0),null);
-var v__4409__auto__ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__27090,(1),null);
+return (function (ret__4407__auto__,p__25379){
+var vec__25380 = p__25379;
+var k__4408__auto__ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25380,(0),null);
+var v__4409__auto__ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25380,(1),null);
 return (f__4405__auto__.cljs$core$IFn$_invoke$arity$3 ? f__4405__auto__.cljs$core$IFn$_invoke$arity$3(ret__4407__auto__,k__4408__auto__,v__4409__auto__) : f__4405__auto__.call(null,ret__4407__auto__,k__4408__auto__,v__4409__auto__));
 });})(this__4404__auto____$1))
 ,init__4406__auto__,this__4404__auto____$1);
@@ -101,10 +101,10 @@ return cljs.core.pr_sequential_writer(writer__4400__auto__,cljs.core.pr_writer,"
 return cljs.core.pr_sequential_writer(writer__4400__auto__,pr_pair__4402__auto__,"#app.games.typing-race.core.TypingRace{",", ","}",opts__4401__auto__,cljs.core.concat.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentVector.EMPTY,self__.__extmap));
 });
 
-app.games.typing_race.core.TypingRace.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__27083){
+app.games.typing_race.core.TypingRace.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__25373){
 var self__ = this;
-var G__27083__$1 = this;
-return (new cljs.core.RecordIter((0),G__27083__$1,0,cljs.core.PersistentVector.EMPTY,(cljs.core.truth_(self__.__extmap)?cljs.core._iterator(self__.__extmap):cljs.core.nil_iter())));
+var G__25373__$1 = this;
+return (new cljs.core.RecordIter((0),G__25373__$1,0,cljs.core.PersistentVector.EMPTY,(cljs.core.truth_(self__.__extmap)?cljs.core._iterator(self__.__extmap):cljs.core.nil_iter())));
 });
 
 app.games.typing_race.core.TypingRace.prototype.cljs$core$IMeta$_meta$arity$1 = (function (this__4383__auto__){
@@ -132,12 +132,12 @@ var h__4243__auto__ = self__.__hash;
 if((!((h__4243__auto__ == null)))){
 return h__4243__auto__;
 } else {
-var h__4243__auto____$1 = (function (){var fexpr__27093 = ((function (h__4243__auto__,this__4381__auto____$1){
+var h__4243__auto____$1 = (function (){var fexpr__25383 = ((function (h__4243__auto__,this__4381__auto____$1){
 return (function (coll__4382__auto__){
 return (471216287 ^ cljs.core.hash_unordered_coll(coll__4382__auto__));
 });})(h__4243__auto__,this__4381__auto____$1))
 ;
-return fexpr__27093(this__4381__auto____$1);
+return fexpr__25383(this__4381__auto____$1);
 })();
 self__.__hash = h__4243__auto____$1;
 
@@ -145,10 +145,10 @@ return h__4243__auto____$1;
 }
 });
 
-app.games.typing_race.core.TypingRace.prototype.cljs$core$IEquiv$_equiv$arity$2 = (function (this27085,other27086){
+app.games.typing_race.core.TypingRace.prototype.cljs$core$IEquiv$_equiv$arity$2 = (function (this25375,other25376){
 var self__ = this;
-var this27085__$1 = this;
-return (((!((other27086 == null)))) && ((this27085__$1.constructor === other27086.constructor)) && (cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(this27085__$1.__extmap,other27086.__extmap)));
+var this25375__$1 = this;
+return (((!((other25376 == null)))) && ((this25375__$1.constructor === other25376.constructor)) && (cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(this25375__$1.__extmap,other25376.__extmap)));
 });
 
 app.games.typing_race.core.TypingRace.prototype.app$game$Game$ = cljs.core.PROTOCOL_SENTINEL;
@@ -176,18 +176,18 @@ var this$__$1 = this;
 var area_width = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(settings,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$game_DASH_area_SLASH_size,cljs.core.cst$kw$width], null));
 var area_height = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(settings,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$game_DASH_area_SLASH_size,cljs.core.cst$kw$height], null));
 var area_horizontal_center = (area_width / (2));
-var tile_size = (function (){var G__27094 = (area_height / cljs.core.cst$kw$tiles.cljs$core$IFn$_invoke$arity$1(this$__$1));
-return Math.floor(G__27094);
+var tile_size = (function (){var G__25384 = (area_height / cljs.core.cst$kw$tiles.cljs$core$IFn$_invoke$arity$1(this$__$1));
+return Math.floor(G__25384);
 })();
 var chars = cljs.core.take.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$tiles.cljs$core$IFn$_invoke$arity$1(this$__$1),cljs.core.cst$kw$chars.cljs$core$IFn$_invoke$arity$1(this$__$1));
 goog.object.set(context,"textAlign","center");
 
 goog.object.set(context,"textBaseline","top");
 
-var G__27095_27103 = context;
-var G__27096_27104 = "font";
-var G__27097_27105 = [cljs.core.str.cljs$core$IFn$_invoke$arity$1(tile_size),"px sans-serif"].join('');
-goog.object.set(G__27095_27103,G__27096_27104,G__27097_27105);
+var G__25385_25393 = context;
+var G__25386_25394 = "font";
+var G__25387_25395 = [cljs.core.str.cljs$core$IFn$_invoke$arity$1(tile_size),"px sans-serif"].join('');
+goog.object.set(G__25385_25393,G__25386_25394,G__25387_25395);
 
 context.clearRect((0),(0),area_width,area_height);
 
@@ -199,8 +199,8 @@ while(true){
 if((i < n__4607__auto__)){
 context.fillText(cljs.core.nth.cljs$core$IFn$_invoke$arity$2(chars,i),area_horizontal_center,((area_height - (((2) + i) * tile_size)) - (tile_size * cljs.core.cst$kw$distance.cljs$core$IFn$_invoke$arity$1(this$__$1))));
 
-var G__27106 = (i + (1));
-i = G__27106;
+var G__25396 = (i + (1));
+i = G__25396;
 continue;
 } else {
 return null;
@@ -219,12 +219,12 @@ return (new app.games.typing_race.core.TypingRace(self__.__meta,cljs.core.not_em
 }
 });
 
-app.games.typing_race.core.TypingRace.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4392__auto__,k__4393__auto__,G__27083){
+app.games.typing_race.core.TypingRace.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4392__auto__,k__4393__auto__,G__25373){
 var self__ = this;
 var this__4392__auto____$1 = this;
-var pred__27098 = cljs.core.keyword_identical_QMARK_;
-var expr__27099 = k__4393__auto__;
-return (new app.games.typing_race.core.TypingRace(self__.__meta,cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k__4393__auto__,G__27083),null));
+var pred__25388 = cljs.core.keyword_identical_QMARK_;
+var expr__25389 = k__4393__auto__;
+return (new app.games.typing_race.core.TypingRace(self__.__meta,cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k__4393__auto__,G__25373),null));
 });
 
 app.games.typing_race.core.TypingRace.prototype.cljs$core$ISeqable$_seq$arity$1 = (function (this__4397__auto__){
@@ -233,10 +233,10 @@ var this__4397__auto____$1 = this;
 return cljs.core.seq(cljs.core.concat.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentVector.EMPTY,self__.__extmap));
 });
 
-app.games.typing_race.core.TypingRace.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4384__auto__,G__27083){
+app.games.typing_race.core.TypingRace.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4384__auto__,G__25373){
 var self__ = this;
 var this__4384__auto____$1 = this;
-return (new app.games.typing_race.core.TypingRace(G__27083,self__.__extmap,self__.__hash));
+return (new app.games.typing_race.core.TypingRace(G__25373,self__.__extmap,self__.__hash));
 });
 
 app.games.typing_race.core.TypingRace.prototype.cljs$core$ICollection$_conj$arity$2 = (function (this__4390__auto__,entry__4391__auto__){
@@ -273,12 +273,12 @@ return (new app.games.typing_race.core.TypingRace(null,null,null));
 /**
  * Factory function for app.games.typing-race.core/TypingRace, taking a map of keywords to field values.
  */
-app.games.typing_race.core.map__GT_TypingRace = (function app$games$typing_race$core$map__GT_TypingRace(G__27087){
-var extmap__4424__auto__ = (function (){var G__27101 = cljs.core.dissoc.cljs$core$IFn$_invoke$arity$1(G__27087);
-if(cljs.core.record_QMARK_(G__27087)){
-return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,G__27101);
+app.games.typing_race.core.map__GT_TypingRace = (function app$games$typing_race$core$map__GT_TypingRace(G__25377){
+var extmap__4424__auto__ = (function (){var G__25391 = cljs.core.dissoc.cljs$core$IFn$_invoke$arity$1(G__25377);
+if(cljs.core.record_QMARK_(G__25377)){
+return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,G__25391);
 } else {
-return G__27101;
+return G__25391;
 }
 })();
 return (new app.games.typing_race.core.TypingRace(null,cljs.core.not_empty(extmap__4424__auto__),null));
