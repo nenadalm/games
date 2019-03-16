@@ -5,7 +5,6 @@
 (def manifest-path "resources/public/js/manifest.edn")
 (def template-path "resources/public/index.html")
 (def output-path "resources/public/index.html")
-(def artifact-dir "resources/public/js/compiled")
 
 (defn- file-name [path]
   (.getName (clojure.java.io/file path)))
@@ -52,8 +51,7 @@
 
 (defn post-build-hook [& args]
   (let [manifest (read-manifest)]
-    (update-template-fingerprints manifest)
-    (delete-file-recursively artifact-dir)))
+    (update-template-fingerprints manifest)))
 
 (defn pre-build-hook [& args]
   (delete-file-recursively "resources/public/js"))

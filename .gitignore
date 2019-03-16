@@ -1,2 +1,4 @@
 /.cpcache/
 /resources/public/js/
+/node_modules/
+/target/

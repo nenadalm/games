@@ -7,4 +7,8 @@
  :optimizations :advanced
  :pretty-print false
  :source-map "./resources/public/js/app.js.map"
- :fingerprint true}
+ :fingerprint true
+ :infer-externs true
+ :foreign-libs [{:file "target/bundle.js"
+                 :provides ["sentry"]
+                 :global-exports {sentry Sentry}}]}

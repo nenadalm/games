@@ -1,3 +1,4 @@
+^{:pre-build-hooks [build.core/pre-build-hook]}
 {:main app.core
  :output-to "./resources/public/js/app.js"
  :output-dir "./resources/public/js/compiled/app/out"
@@ -7,4 +8,7 @@
  :source-map true
  :source-map-timestamp true
  :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
- :preloads [day8.re-frame-10x.preload]}
+ :preloads [day8.re-frame-10x.preload]
+ :foreign-libs [{:file "target/bundle.js"
+                 :provides ["sentry"]
+                 :global-exports {sentry Sentry}}]}

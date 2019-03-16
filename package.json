@@ -1,0 +1,14 @@
+{
+    "scripts": {
+        "clean": "rm -rf ./target",
+        "build": "yarn run clean && webpack -p",
+        "build:dev": "yarn run clean && webpack -p --inline-source-map"
+    },
+    "dependencies": {
+        "@sentry/browser": "^4.6.4"
+    },
+    "devDependencies": {
+        "webpack": "^4.29.6",
+        "webpack-cli": "^3.3.0"
+    }
+}

@@ -16,10 +16,15 @@ jobs:
           curl -O https://download.clojure.org/install/linux-install-${CLI_TOOLS_VERSION}.sh
           chmod +x linux-install-${CLI_TOOLS_VERSION}.sh
           sudo ./linux-install-${CLI_TOOLS_VERSION}.sh
+        - 'nvm install 10'
+        - 'npm install -g yarn'
       install:
+        - 'yarn install'
         - 'clojure -Stree'
       script:
-        - 'clojure -m figwheel.main --build-once min'
+        - 'yarn run build'
+        - 'echo "{:closure-defines {app.config/sentry-dsn \"${SENTRY_DSN}\"}}" > options.cljs.edn'
+        - 'clojure -m figwheel.main --build-once options:min'
       deploy:
         provider: pages
         skip-cleanup: true
