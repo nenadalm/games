@@ -28,7 +28,7 @@ taoensso.timbre.merge_config_BANG_(new cljs.core.PersistentArrayMap(null, 1, [cl
 window.addEventListener("error",(function (e){
 return taoensso.timbre._log_BANG_.cljs$core$IFn$_invoke$arity$10(taoensso.timbre._STAR_config_STAR_,cljs.core.cst$kw$error,"app.core",null,26,cljs.core.cst$kw$p,cljs.core.cst$kw$auto,(new cljs.core.Delay((function (){
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [e.error], null);
-}),null)),null,-929370890);
+}),null)),null,-2064087778);
 }));
 } else {
 }
