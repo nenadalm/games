@@ -1,4 +1,3 @@
-^{:pre-build-hooks [build.core/pre-build-hook]}
 {:main app.core
  :output-to "./resources/public/js/app.js"
  :output-dir "./resources/public/js/compiled/app/out"
