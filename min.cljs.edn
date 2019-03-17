@@ -1,5 +1,5 @@
-^{:pre-build-hooks [build.core/pre-build-hook]
-  :post-build-hooks [build.core/post-build-hook]}
+^{:pre-build-hooks [build.hooks.clear-artefacts/-main]
+  :post-build-hooks [build.hooks.update-fingerprints/-main]}
 {:main app.core
  :output-to "./resources/public/js/app.js"
  :output-dir "./resources/public/js/compiled/app/out"

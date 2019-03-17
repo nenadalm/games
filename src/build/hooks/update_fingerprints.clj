@@ -1,4 +1,4 @@
-(ns build.core
+(ns build.hooks.update-fingerprints
   (:require
    [clojure.edn :as edn]))
 
@@ -26,20 +26,6 @@
                (next match-replacements))
         template-content))))
 
-(defn- read-manifest []
-  (-> manifest-path
-      slurp
-      edn/read-string))
-
-(defn- delete-file-recursively [f]
-  (let [files (some-> f
-                      clojure.java.io/file
-                      (as-> file (if (.exists file) file nil))
-                      file-seq
-                      reverse)]
-    (doseq [file files]
-      (clojure.java.io/delete-file file))))
-
 (defn- update-template-fingerprints
   "Takes care of cache busting by replacing js files in template with alternatives using fingerprints.
   (replaces e.g. app.js with app-111ce5a.js)"
@@ -49,9 +35,11 @@
         manifest)
        (spit output-path)))
 
-(defn post-build-hook [& args]
+(defn- read-manifest []
+  (-> manifest-path
+      slurp
+      edn/read-string))
+
+(defn -main [& args]
   (let [manifest (read-manifest)]
     (update-template-fingerprints manifest)))
-
-(defn pre-build-hook [& args]
-  (delete-file-recursively "resources/public/js"))
