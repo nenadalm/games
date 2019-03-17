@@ -8,12 +8,12 @@ app.timbre.appender.sentry.sentry_appender = (function app$timbre$appender$sentr
 app.timbre.appender.sentry.global$module$sentry.init(({"dsn": dsn}));
 
 return new cljs.core.PersistentArrayMap(null, 4, [cljs.core.cst$kw$enabled_QMARK_,true,cljs.core.cst$kw$min_DASH_level,cljs.core.cst$kw$warn,cljs.core.cst$kw$rate_DASH_limit,null,cljs.core.cst$kw$fn,(function (data){
-var map__13710 = data;
-var map__13710__$1 = (((((!((map__13710 == null))))?(((((map__13710.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__13710.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__13710):map__13710);
-var level = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13710__$1,cljs.core.cst$kw$level);
-var msg_ = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13710__$1,cljs.core.cst$kw$msg_);
-var context = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13710__$1,cljs.core.cst$kw$context);
-var _QMARK_err = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13710__$1,cljs.core.cst$kw$_QMARK_err);
+var map__13620 = data;
+var map__13620__$1 = (((((!((map__13620 == null))))?(((((map__13620.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__13620.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__13620):map__13620);
+var level = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13620__$1,cljs.core.cst$kw$level);
+var msg_ = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13620__$1,cljs.core.cst$kw$msg_);
+var context = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13620__$1,cljs.core.cst$kw$context);
+var _QMARK_err = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13620__$1,cljs.core.cst$kw$_QMARK_err);
 var event = cljs.core.merge.cljs$core$IFn$_invoke$arity$variadic(cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([new cljs.core.PersistentArrayMap(null, 2, [cljs.core.cst$kw$message,cljs.core.force(msg_),cljs.core.cst$kw$level,cljs.core.get.cljs$core$IFn$_invoke$arity$2(app.timbre.appender.sentry.timbre__GT_sentry_levels,level)], null),(cljs.core.truth_(context)?new cljs.core.PersistentArrayMap(null, 1, [cljs.core.cst$kw$extra,context], null):null)], 0));
 if(cljs.core.truth_(_QMARK_err)){
 return app.timbre.appender.sentry.global$module$sentry.captureException(_QMARK_err);
