@@ -1,3 +1,6 @@
+#+ATTR_HTML: :alt Build Status
+[[http://travis-ci.org/nenadalm/games][https://secure.travis-ci.org/nenadalm/games.png?branch=master]]
+
 #+ATTR_HTML: :alt License: MIT
 [[LICENSE][https://img.shields.io/badge/License-MIT-yellow.svg]]
 
