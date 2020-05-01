@@ -1,6 +1,6 @@
 (ns ^:figwheel-hooks app.core
   (:require
-   [reagent.core :as reagent]
+   [reagent.dom :as reagent-dom]
    [re-frame.core :as re-frame]
    [taoensso.timbre :as timbre :refer-macros [error]]
    [app.timbre.appender.sentry :refer [sentry-appender]]
@@ -16,8 +16,8 @@
 
 (defn mount-root []
   (re-frame/clear-subscription-cache!)
-  (reagent/render [views/app]
-                  (.getElementById js/document "app")))
+  (reagent-dom/render [views/app]
+                      (.getElementById js/document "app")))
 
 (defn ^:export init []
   (when (seq config/sentry-dsn)
