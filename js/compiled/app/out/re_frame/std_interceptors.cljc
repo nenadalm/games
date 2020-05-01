@@ -29,11 +29,11 @@
   can be slow. So, you won't want this interceptor present in production
   code. So condition it out like this :
 
-    (re-frame.core/reg-event-db
-       :evt-id
-       [(when ^boolean goog.DEBUG re-frame.core/debug)]  ;; <-- conditional
-       (fn [db v]
-         ...))
+      (re-frame.core/reg-event-db
+         :evt-id
+         [(when ^boolean goog.DEBUG re-frame.core/debug)]  ;; <-- conditional
+         (fn [db v]
+           ...))
 
   To make this code fragment work, you'll also have to set goog.DEBUG to
   false in your production builds - look in `project.clj` of /examples/todomvc.
@@ -50,7 +50,7 @@
                     orig-db (get-coeffect context :db)
                     new-db  (get-effect   context :db ::not-found)]
                 (if (= new-db ::not-found)
-                  (console :log "No :db changes caused by:" event)
+                  (console :log "No app-db changes in:" event)
                   (let [[only-before only-after] (data/diff orig-db new-db)
                         db-changed?    (or (some? only-before) (some? only-after))]
                     (if db-changed?
@@ -58,7 +58,7 @@
                           (console :log "only before:" only-before)
                           (console :log "only after :" only-after)
                           (console :groupEnd))
-                      (console :log "no app-db changes caused by:" event))))
+                      (console :log "No app-db changes resulted from:" event))))
                 context))))
 
 
@@ -95,8 +95,8 @@
 
   These handlers take two arguments;  `db` and `event`, and they return `db`.
 
-  (fn [db event]
-     ....)
+      (fn [db event]
+         ....)
 
   So, the interceptor wraps the given handler:
      1. extracts two `:coeffects` keys: db and event
@@ -127,9 +127,9 @@
 
   These handlers take two arguments;  `coeffects` and `event`, and they return `effects`.
 
-  (fn [coeffects event]
-     {:db ...
-      :dispatch ...})
+      (fn [coeffects event]
+         {:db ...
+          :dispatch ...})
 
    Wrap handler in an interceptor so it can be added to (the RHS) of a chain:
      1. extracts `:coeffects`
@@ -140,13 +140,13 @@
   :id     :fx-handler
   :before (fn fx-handler-before
             [context]
-            (let [{:keys [event] :as coeffects} (:coeffects context)
-                  new-context
+            (let [new-context
                   (trace/with-trace
                     {:op-type   :event/handler
                      :operation (get-in context [:coeffects :event])}
-                    (->> (handler-fn coeffects event)
-                         (assoc context :effects)))]
+                    (let [{:keys [event] :as coeffects} (:coeffects context)]
+                      (->> (handler-fn coeffects event)
+                           (assoc context :effects))))]
               (trace/merge-trace!
                 {:tags {:effects   (:effects new-context)
                         :coeffects (:coeffects context)}})
@@ -157,8 +157,9 @@
   "Returns an interceptor which wraps the kind of event handler given to `reg-event-ctx`.
   These advanced handlers take one argument: `context` and they return a modified `context`.
   Example:
-     (fn [context]
-        (enqueue context [more interceptors]))"
+
+      (fn [context]
+         (enqueue context [more interceptors]))"
   [handler-fn]
   (->interceptor
     :id     :ctx-handler
@@ -187,18 +188,19 @@
   you might give to clojure's `update-in`.
 
   Examples:
-    (path :some :path)
-    (path [:some :path])
-    (path [:some :path] :to :here)
-    (path [:some :path] [:to] :here)
+
+      (path :some :path)
+      (path [:some :path])
+      (path [:some :path] :to :here)
+      (path [:some :path] [:to] :here)
 
   Example Use:
 
-    (reg-event-db
-      :event-id
-      (path [:a :b])  ;; used here, in interceptor chain
-      (fn [b v]       ;; 1st arg is now not db. Is the value from path [:a :b] within db
-        ... new-b))   ;; returns a new value for that path (not the entire db)
+      (reg-event-db
+        :event-id
+        (path [:a :b])  ;; used here, in interceptor chain
+        (fn [b v]       ;; 1st arg is now not db. Is the value from path [:a :b] within db
+          ... new-b))   ;; returns a new value for that path (not the entire db)
 
   Notes:
     1. `path` may appear more than once in an interceptor chain. Progressive narrowing.
@@ -323,11 +325,11 @@
 
   Usage:
 
-  (defn my-f
-    [a-val b-val]
-    ... some computation on a and b in here)
+      (defn my-f
+        [a-val b-val]
+        ... some computation on a and b in here)
 
-  (on-changes my-f [:c]  [:a] [:b])
+      (on-changes my-f [:c]  [:a] [:b])
 
   Put this Interceptor on the right handlers (ones which might change :a or :b).
   It will:

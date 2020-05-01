@@ -15,7 +15,7 @@
 /**
  * @fileoverview An event manager for both native browser event
  * targets and custom JavaScript event targets
- * ({@code goog.events.Listenable}). This provides an abstraction
+ * (`goog.events.Listenable`). This provides an abstraction
  * over browsers' event systems.
  *
  * It also provides a simulation of W3C event model's capture phase in
@@ -56,15 +56,14 @@ goog.provide('goog.events.CaptureSimulationMode');
 goog.provide('goog.events.Key');
 goog.provide('goog.events.ListenableType');
 
+goog.forwardDeclare('goog.debug.ErrorHandler');
+goog.forwardDeclare('goog.events.EventWrapper');
 goog.require('goog.asserts');
 goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.BrowserFeature');
 goog.require('goog.events.Listenable');
 goog.require('goog.events.ListenerMap');
-
-goog.forwardDeclare('goog.debug.ErrorHandler');
-goog.forwardDeclare('goog.events.EventWrapper');
 
 
 /**
@@ -133,7 +132,8 @@ goog.events.CaptureSimulationMode = {
  * @define {number} The capture simulation mode for IE8-. By default,
  *     this is ON.
  */
-goog.define('goog.events.CAPTURE_SIMULATION_MODE', 2);
+goog.events.CAPTURE_SIMULATION_MODE =
+    goog.define('goog.events.CAPTURE_SIMULATION_MODE', 2);
 
 
 /**
@@ -215,7 +215,7 @@ goog.events.listen = function(src, type, listener, opt_options, opt_handler) {
 goog.events.listen_ = function(
     src, type, listener, callOnce, opt_options, opt_handler) {
   if (!type) {
-    throw Error('Invalid event type');
+    throw new Error('Invalid event type');
   }
 
   var capture =
@@ -268,8 +268,15 @@ goog.events.listen_ = function(
     // incarnation of this code, from 2007, indicates that it replaced an
     // earlier still version that caused excess allocations on IE6.
     src.attachEvent(goog.events.getOnString_(type.toString()), proxy);
+  } else if (src.addListener && src.removeListener) {
+    // In IE, MediaQueryList uses addListener() insteadd of addEventListener. In
+    // Safari, there is no global for the MediaQueryList constructor, so we just
+    // check whether the object "looks like" MediaQueryList.
+    goog.asserts.assert(
+        type === 'change', 'MediaQueryList only has a change event');
+    src.addListener(proxy);
   } else {
-    throw Error('addEventListener and attachEvent are unavailable.');
+    throw new Error('addEventListener and attachEvent are unavailable.');
   }
 
   goog.events.listenerCountEstimate_++;
@@ -437,7 +444,7 @@ goog.events.unlisten = function(src, type, listener, opt_options, opt_handler) {
 goog.events.unlistenByKey = function(key) {
   // TODO(chrishenry): Remove this check when tests that rely on this
   // are fixed.
-  if (goog.isNumber(key)) {
+  if (typeof key === 'number') {
     return false;
   }
 
@@ -457,6 +464,8 @@ goog.events.unlistenByKey = function(key) {
     src.removeEventListener(type, proxy, listener.capture);
   } else if (src.detachEvent) {
     src.detachEvent(goog.events.getOnString_(type), proxy);
+  } else if (src.addListener && src.removeListener) {
+    src.removeListener(proxy);
   }
   goog.events.listenerCountEstimate_--;
 

@@ -22,9 +22,8 @@
 
 (defn- game-iter
   "Runs single iteration of the game loop (update, render). Returns state."
-  [state]
-  (let [current-time (.now js/window.performance)
-        delta (- current-time (:prev-time state))
+  [state current-time]
+  (let [delta (- current-time (:prev-time state))
         inputs (if (:running state)
                  (conj (:inputs state) [:delta delta])
                  (:inputs state))
@@ -54,10 +53,10 @@
              (update state :inputs conj (second event))
              state)
     :loop (do
-            (.requestAnimationFrame js/window #(vswap! game-state process-event! [:loop]))
-            (game-iter state))
+            (.requestAnimationFrame js/window #(vswap! game-state process-event! [:loop %]))
+            (game-iter state (second event)))
     :start (do
-             (.requestAnimationFrame js/window #(vswap! game-state process-event! [:loop]))
+             (.requestAnimationFrame js/window #(vswap! game-state process-event! [:loop %]))
              (start-game (second event)))
     :stop (assoc state :running false)
     :pause (assoc state :running false)

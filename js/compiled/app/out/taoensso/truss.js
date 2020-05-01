@@ -1,4 +1,4 @@
-// Compiled by ClojureScript 1.10.520 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.748 {:static-fns true, :optimize-constants true}
 goog.provide('taoensso.truss');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
@@ -20,5 +20,5 @@ return f;
  * Sets the root (fn [data-map-delay]) called on invariant violations.
  */
 taoensso.truss.set_error_fn_BANG_ = (function taoensso$truss$set_error_fn_BANG_(f){
-return taoensso.truss.impl._STAR_error_fn_STAR_ = taoensso.truss._error_fn(f);
+return (taoensso.truss.impl._STAR_error_fn_STAR_ = taoensso.truss._error_fn(f));
 });

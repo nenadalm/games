@@ -1,4 +1,4 @@
-// Compiled by ClojureScript 1.10.520 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.748 {:static-fns true, :optimize-constants true}
 goog.provide('re_frame.cofx');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
@@ -78,8 +78,8 @@ return re_frame.registrar.register_handler(re_frame.cofx.kind,id,handler);
  * to the event handler at call time.
  */
 re_frame.cofx.inject_cofx = (function re_frame$cofx$inject_cofx(var_args){
-var G__16998 = arguments.length;
-switch (G__16998) {
+var G__16759 = arguments.length;
+switch (G__16759) {
 case 1:
 return re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -94,7 +94,7 @@ throw (new Error(["Invalid arity: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(
 }
 });
 
-re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$1 = (function (id){
+(re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$1 = (function (id){
 return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([cljs.core.cst$kw$id,cljs.core.cst$kw$coeffects,cljs.core.cst$kw$before,(function re_frame$cofx$coeffects_before(context){
 var temp__5718__auto__ = re_frame.registrar.get_handler.cljs$core$IFn$_invoke$arity$2(re_frame.cofx.kind,id);
 if(cljs.core.truth_(temp__5718__auto__)){
@@ -104,9 +104,9 @@ return cljs.core.update.cljs$core$IFn$_invoke$arity$3(context,cljs.core.cst$kw$c
 return re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$error,cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2(["No cofx handler registered for",id], 0));
 }
 })], 0));
-});
+}));
 
-re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$2 = (function (id,value){
+(re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$2 = (function (id,value){
 return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([cljs.core.cst$kw$id,cljs.core.cst$kw$coeffects,cljs.core.cst$kw$before,(function re_frame$cofx$coeffects_before(context){
 var temp__5718__auto__ = re_frame.registrar.get_handler.cljs$core$IFn$_invoke$arity$2(re_frame.cofx.kind,id);
 if(cljs.core.truth_(temp__5718__auto__)){
@@ -116,9 +116,9 @@ return cljs.core.update.cljs$core$IFn$_invoke$arity$4(context,cljs.core.cst$kw$c
 return re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$error,cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2(["No cofx handler registered for",id], 0));
 }
 })], 0));
-});
+}));
 
-re_frame.cofx.inject_cofx.cljs$lang$maxFixedArity = 2;
+(re_frame.cofx.inject_cofx.cljs$lang$maxFixedArity = 2);
 
 re_frame.cofx.reg_cofx(cljs.core.cst$kw$db,(function re_frame$cofx$db_coeffects_handler(coeffects){
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(coeffects,cljs.core.cst$kw$db,cljs.core.deref(re_frame.db.app_db));

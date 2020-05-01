@@ -72,7 +72,6 @@
    [goog.net.XhrIo      :as gxhr]
    [goog.net.XhrIoPool  :as gxhr-pool]
    [goog.Uri.QueryData  :as gquery-data]
-   [goog.structs        :as gstructs]
    [goog.net.EventType]
    [goog.net.ErrorCode]
    [taoensso.truss :as truss])
@@ -85,7 +84,7 @@
      cond! catching -if-cas! now-dt* now-udt* now-nano* -gc-now?
      name-with-attrs -vol! -vol-reset! -vol-swap! deprecated new-object]]))
 
-(def encore-version [2 107 0])
+(def encore-version [2 119 0])
 
 (comment "ℕ ℤ ℝ ∞ ≠ ∈ ∉"
   (set! *unchecked-math* :warn-on-boxed)
@@ -484,18 +483,19 @@
 
                                                       
                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
-                                                                       
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
 
                                                                        
                                                                            
@@ -523,10 +523,11 @@
   (defn ^boolean derefable?  [x] (satisfies?  IDeref              x))
   ;; (defn throwable?        [x])
   ;; (defn exception?        [x])
-  (defn ^boolean      error? [x] (instance?   js/Error            x))
-  (defn ^boolean       atom? [x] (instance?   Atom                x))
-  (defn ^boolean   lazy-seq? [x] (instance?   LazySeq             x))
-  (defn ^boolean re-pattern? [x] (instance?   js/RegExp           x))
+  (defn ^boolean      error? [x] (instance?   js/Error             x))
+  (defn ^boolean       atom? [x] (instance?   Atom                 x))
+  (defn ^boolean  transient? [x] (instance?   ITransientCollection x))
+  (defn ^boolean   lazy-seq? [x] (instance?   LazySeq              x))
+  (defn ^boolean re-pattern? [x] (instance?   js/RegExp            x))
 
   (defn ^boolean simple-ident?      [x] (and (ident?   x) (nil? (namespace x))))
   (defn ^boolean qualified-ident?   [x] (and (ident?   x)       (namespace x) true))
@@ -842,7 +843,7 @@
 
 ;;;; Reduce
 
-;; (defn ensure-reduced [x] (if (reduced? x) x (reduced x)))
+(defn   convey-reduced [x] (if (reduced? x) (reduced x) x)) ; Double-wrap
 (defn preserve-reduced "As `core/preserving-reduced`."
   [rf]
   (fn [acc in]
@@ -862,26 +863,34 @@
     (reduce (fn [acc [k v]] (rf acc k v)) init (partition-all 2 kvs))))
 
 (compile-if clojure.lang.LongRange ; Clojure 1.7+ (no Cljs support yet)
-  (defn reduce-n [rf init ^long n] (reduce rf init (range n)))
-  (defn reduce-n [rf init ^long n]
-    (loop [acc init idx 0]
-      (if (== idx n)
-        acc
-        (let [acc (rf acc idx)]
-          (if (reduced? acc)
-            @acc
-            (recur acc (unchecked-inc idx))))))))
+  (defn reduce-n
+    ([rf init       end] (reduce rf init (range       end)))
+    ([rf init start end] (reduce rf init (range start end))))
 
-(comment (reduce-n conj [] 100))
+  (defn reduce-n
+    ([rf init                   end] (reduce-n rf init 0 end))
+    ([rf init ^long start ^long end]
+     (loop [acc init idx start]
+       (if (>= idx end)
+         acc
+         (let [acc (rf acc idx)]
+           (if (reduced? acc)
+             @acc
+             (recur acc (unchecked-inc idx)))))))))
+
+(comment (reduce-n conj [] 10 100))
 
 (let [inc (fn [n] (inc ^long n))] ; For var deref, boxing
   (defn reduce-indexed
-    "Like `reduce` but takes (rf [acc idx in]) with idx as in `map-indexed`."
+    "Like `reduce` but takes (rf [acc idx in]) with idx as in `map-indexed`.
+    As `reduce-kv` against vector coll, but works on any seqable coll type."
     [rf init coll]
     (let [i (-vol! -1)]
       (reduce (fn [acc in] (rf acc (-vol-swap! i inc) in)) init coll))))
 
-(comment (reduce-indexed (fn [acc idx in] (assoc acc idx in)) {} [:a :b :c]))
+(comment
+  (reduce-indexed (fn [acc idx in] (assoc acc idx in)) {} [:a :b :c])
+  (reduce-kv      (fn [acc idx in] (assoc acc idx in)) {} [:a :b :c]))
 
       
 (defn reduce-obj "Like `reduce-kv` but for JavaScript objects."
@@ -913,13 +922,20 @@
 
 ;;;; Math
 
-(let [inc (fn [n] (inc ^long n))]
-  (defn idx-fn
-    "Returns a new stateful index fn that returns: 0, 1, 2, ..."
-    []
-           (let [idx_ (-vol! -1)] (fn [] (-vol-swap! idx_ inc)))
-                                                                
-                                             ))
+(defn counter []
+        
+  (let [idx_ (-vol! -1)]
+    (fn counter
+      ([ ] (-vol-swap! idx_ (fn [c] (+ c 1))))
+      ([n] (-vol-swap! idx_ (fn [c] (+ c n))))))
+
+       
+                                                       
+               
+                                   
+                                              )
+
+(comment (let [c (counter)] (dotimes [_ 100] (c 2)) (c)))
 
 (def ^:const max-long                              9007199254740991)
 (def ^:const min-long                             -9007199254740991)
@@ -974,7 +990,8 @@
 (do ; Optimized common cases
   (defn round0   ^long [n]            (Math/round    (double n)))
   (defn round1 ^double [n] (/ (double (Math/round (* (double n)  10.0)))  10.0))
-  (defn round2 ^double [n] (/ (double (Math/round (* (double n) 100.0))) 100.0)))
+  (defn round2 ^double [n] (/ (double (Math/round (* (double n) 100.0))) 100.0))
+  (defn perc     ^long [n divisor] (Math/round (* (/ (double n) (double divisor)) 100.0))))
 
 (defn exp-backoff "Returns binary exponential backoff value for n<=36."
   ([^long n-attempt] (exp-backoff n-attempt nil))
@@ -1065,22 +1082,24 @@
     (defn vec* [x] (if (vector? x) x (vec x)))
     (defn set* [x] (if (set?    x) x (set x)))))
 
-       (defn oset [o k v] (gobj/set (if (nil? o) (js-obj) o) k v))
+       (defn oset [o k v] (gobj/set (if (nil? o) (js-obj) o) (name k) v))
       
 (defn oget "Like `get` for JS objects, Ref. https://goo.gl/eze8hY."
-  ([o k          ] (gobj/get o k nil))
-  ([o k not-found] (gobj/get o k not-found)))
+  ([  k          ] (gobj/get js/window (name k)))
+  ([o k          ] (gobj/get o         (name k) nil))
+  ([o k not-found] (gobj/get o         (name k) not-found)))
 
       
 (let [sentinel (js-obj)]
   ;; Could also use `gobg/getValueByKeys`
   (defn oget-in "Like `get-in` for JS objects."
-    ([o ks] (oget-in o ks nil))
+    ([  ks] (oget-in js/window ks nil))
+    ([o ks] (oget-in o         ks nil))
     ([o ks not-found]
      (loop [o o
             ks (seq ks)]
        (if ks
-         (let [o (gobj/get o (first ks) sentinel)]
+         (let [o (gobj/get o (name (first ks)) sentinel)]
            (if (identical? o sentinel)
              not-found
              (recur o (next ks))))
@@ -1130,6 +1149,21 @@
        (if (nil? m) {} m)
        kvs)))
 
+  (defn dis-assoc-some
+    "Assocs each kv if its value is not nil, otherwise dissocs it."
+    ([m k v      ] (if (nil? v) (if (nil? m) {} (dissoc m k)) (assoc m k v)))
+    ([m k v & kvs]
+     (reduce-kvs
+       (fn [m k v] (if (nil? v) (dissoc m k) (assoc m k v)))
+       (assoc-some m k v)
+       kvs))
+
+    ([m kvs]
+     (reduce-kv
+       (fn [m k v] (if (nil? v) (dissoc m k) (assoc m k v)))
+       (if (nil? m) {} m)
+       kvs)))
+
   ;; Handy as l>r merge
   (defn assoc-nx "Assocs each kv iff its key doesn't already exist."
     ([m k v] (if (contains? m k) m (assoc m k v)))
@@ -1143,6 +1177,7 @@
 (comment
   (assoc-some {:a :A} :b nil :c :C :d nil :e :E)
   (assoc-some {:a :A} {:b :B :c nil :d :D :e false})
+  (dis-assoc-some {:a :A :b :B} {:a :a :b nil})
   (reduce-kv assoc-nx {:a :A} {:a :a :b :b}))
 
 (defn get-subvec
@@ -1265,7 +1300,7 @@
     ([] (distinct)) ; core now has a distinct transducer
     ([keyfn]
      (fn [rf]
-       (let [seen_ (volatile! #{})]
+       (let [seen_ (volatile! (transient #{}))]
          (fn
            ([]    (rf))
            ([acc] (rf acc))
@@ -1273,18 +1308,19 @@
             (let [k (keyfn input)]
               (if (contains? @seen_ k)
                 acc
-                (do (vswap! seen_ conj k)
+                (do (vswap! seen_ conj! k)
                     (rf acc input)))))))))))
 
 (comment (into [] (xdistinct) [1 2 3 1 4 5 2 6 7 1]))
 
-(do ; Note `mapv`-like nil->{} semantics, no transients
-  (defn map-vals       [f m] (if (nil? m) {} (reduce-kv (fn [m k v] (assoc m k (f v))) m m)))
-  (defn map-keys       [f m] (if (nil? m) {} (reduce-kv (fn [m k v] (assoc m (f k) v)) {} m)))
-  (defn filter-keys [pred m] (if (nil? m) {} (reduce-kv (fn [m k v] (if (pred k) m (dissoc m k))) m m)))
-  (defn filter-vals [pred m] (if (nil? m) {} (reduce-kv (fn [m k v] (if (pred v) m (dissoc m k))) m m)))
-  (defn remove-keys [pred m] (if (nil? m) {} (reduce-kv (fn [m k v] (if (pred k) (dissoc m k) m)) m m)))
-  (defn remove-vals [pred m] (if (nil? m) {} (reduce-kv (fn [m k v] (if (pred v) (dissoc m k) m)) m m))))
+(let [p! persistent!, t transient] ; Note `mapv`-like nil->{} semantics
+  (defn invert-map       [m]                 (p! (reduce-kv (fn [m k v] (assoc! m v    k))  (t {}) m)))
+  (defn map-keys       [f m]                 (p! (reduce-kv (fn [m k v] (assoc! m (f k) v)) (t {}) m)))
+  (defn map-vals       [f m] (if (nil? m) {} (p! (reduce-kv (fn [m k v] (assoc! m k (f v))) (t  m) m))))
+  (defn filter-keys [pred m] (if (nil? m) {} (p! (reduce-kv (fn [m k v] (if (pred k) m (dissoc! m k))) (t m) m))))
+  (defn filter-vals [pred m] (if (nil? m) {} (p! (reduce-kv (fn [m k v] (if (pred v) m (dissoc! m k))) (t m) m))))
+  (defn remove-keys [pred m] (if (nil? m) {} (p! (reduce-kv (fn [m k v] (if (pred k) (dissoc! m k) m)) (t m) m))))
+  (defn remove-vals [pred m] (if (nil? m) {} (p! (reduce-kv (fn [m k v] (if (pred v) (dissoc! m k) m)) (t m) m)))))
 
 (defn keys-by
   "Returns {(f x) x} map for xs in `coll`."
@@ -1345,6 +1381,25 @@
    (dissoc-in    {:a {:b {:c :C :d :D :e :E}}} [:a :b] :c :e)
    (contains-in? {:a {:b {:c :C :d :D :e :E}}} [:a :b :c])
    (contains-in? {:a {:b {:c :C :d :D :e :E}}} [:a])])
+
+(defn node-paths
+  ([          m      ] (node-paths associative? m nil))
+  ([node-pred m      ] (node-paths node-pred    m nil))
+  ([node-pred m basis]
+   (let [basis (or basis [])]
+     (persistent!
+       (reduce-kv
+         (fn [acc k v]
+           (if-not (node-pred v)
+             (conj! acc (conj basis k v))
+             (let [paths-from-basis (node-paths node-pred v (conj basis k))]
+               (reduce (fn [acc in] (conj! acc in)) acc paths-from-basis))))
+         (transient [])
+         m)))))
+
+(comment
+  (node-paths associative? {:a1 :A1 :a2 {:b1 :B1 :b2 {:c1 :C1 :c2 :C2}}} [:h])
+  (node-paths [:a1 :a2 [:b1 :b2 [:c1 :c2] :b3] :a3 :a4]))
 
 (defn interleave-all "Greedy version of `interleave`."
   ([     ] '())
@@ -2089,6 +2144,71 @@
   (qb 1e6 (rl1)) ; 266.58
   )
 
+;;;; Counters
+
+(deftype RollingCounter [^long msecs          n-skip_ ts_]
+                                IFn
+  (                    -invoke [this]
+                                ; Block iff latched
+    (swap! ts_ (let [t1 (now-udt*)] (fn [v] (conj v t1))))
+    this ; Return to allow optional deref
+    )
+
+                                   IDeref
+  (                   -deref [_]
+                                ; Block iff latched
+
+    (let [t1 (now-udt*)
+          ^long n-skip0  @n-skip_
+          ts             @ts_
+          n-total  (count ts)
+          ^long n-window
+          (reduce
+            (fn [^long n ^long t0]
+              (if (<= (- t1 t0) msecs)
+                (inc n)
+                (do  n)))
+            0
+            (subvec ts n-skip0))
+
+          n-skip1 (- n-total n-window)]
+
+      ;; (println {:n-total n-total :n-window n-window :n-skip0 n-skip0 :n-skip1 n-skip1})
+      (when (<            n-skip0 n-skip1)
+        (-if-cas! n-skip_ n-skip0 n-skip1
+          (when (> n-skip1 10000) ; Time to gc, amortised cost
+                  
+            (do
+              (swap! ts_ (fn [v]  (subvec v n-skip1)))
+              (reset! n-skip_ 0))
+
+                 
+                              
+                                        
+                   
+                                                         
+                                     
+                                  
+                                     )))
+
+      n-window)))
+
+(defn rolling-counter
+  "Experimental. Returns a RollingCounter that you can:
+    - Invoke to increment count in last `msecs` window and return RollingCounter.
+    - Deref  to return    count in last `msecs` window."
+  [msecs]
+  (RollingCounter.
+    (long (have pos-int? msecs))
+                    
+    (atom 0)
+    (atom [])))
+
+(comment
+  (def myrc (rolling-counter 4000))
+  (dotimes [_ 100000] (myrc))
+  @myrc)
+
 ;;;; Strings
 
                                                                               
@@ -2124,9 +2244,9 @@
   (defn str-join
     "Faster, transducer-based generalization of `clojure.string/join` with `xform`
     support"
-    ([                coll] (str-join nil       nil coll))
-    ([separator       coll] (str-join separator nil coll))
-    ([separator xform coll]
+    (^String [                coll] (str-join nil       nil coll))
+    (^String [separator       coll] (str-join separator nil coll))
+    (^String [separator xform coll]
      (if (and separator (not= separator ""))
        (let [sep-xform (interpose separator)
              str-rf*   (completing str-rf str)]
@@ -2763,7 +2883,7 @@
           (fn url-encode
             ([params]
              (when (seq params)
-               (-> params clj->js gstructs/Map. gquery-data/createFromMap .toString)))
+               (-> params clj->js gquery-data/createFromMap .toString)))
 
             ([uri params]
              (let [qstr (url-encode params)
@@ -2969,15 +3089,18 @@
 
      
                    
-                                       
+                                                      
                        
-                                                        
-                                                         
-                               
+                             
+                
                   
-                       
+           
+              
+                                    
+                                    
+              
 
-(comment (redirect-resp :temp "/foo" "boo!"))
+(comment (redirect-resp 303 "/foo" "boo!"))
 
 (defn url-encode "Based on https://goo.gl/fBqy6e"
                          
@@ -3381,6 +3504,7 @@
   (def -vswapped       swapped-vec)
   (def -swap-k!        -swap-val!)
   (def update-in*      update-in)
+  (def idx-fn          counter)
 
                                                                              
                                                                              
