@@ -2,7 +2,7 @@
 goog.provide('app.core');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
-goog.require('reagent.core');
+goog.require('reagent.dom');
 goog.require('re_frame.core');
 goog.require('taoensso.timbre');
 goog.require('app.timbre.appender.sentry');
@@ -19,7 +19,7 @@ return null;
 app.core.mount_root = (function app$core$mount_root(){
 (re_frame.core.clear_subscription_cache_BANG_.cljs$core$IFn$_invoke$arity$0 ? re_frame.core.clear_subscription_cache_BANG_.cljs$core$IFn$_invoke$arity$0() : re_frame.core.clear_subscription_cache_BANG_.call(null));
 
-return reagent.core.render.cljs$core$IFn$_invoke$arity$2(new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.views.app], null),document.getElementById("app"));
+return reagent.dom.render.cljs$core$IFn$_invoke$arity$2(new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.views.app], null),document.getElementById("app"));
 });
 app.core.init = (function app$core$init(){
 if(cljs.core.seq(app.config.sentry_dsn)){
@@ -28,7 +28,7 @@ taoensso.timbre.merge_config_BANG_(new cljs.core.PersistentArrayMap(null, 1, [cl
 window.addEventListener("error",(function (e){
 return taoensso.timbre._log_BANG_.cljs$core$IFn$_invoke$arity$10(taoensso.timbre._STAR_config_STAR_,cljs.core.cst$kw$error,"app.core",null,26,cljs.core.cst$kw$p,cljs.core.cst$kw$auto,(new cljs.core.Delay((function (){
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [e.error], null);
-}),null)),null,-471819298);
+}),null)),null,553423455);
 }));
 } else {
 }
