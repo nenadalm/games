@@ -9,5 +9,12 @@ module.exports = {
     output: {
         path: BUILD_DIR,
         filename: 'bundle.js'
-    }
+    },
+    // uncomment to enable react profiling in prod build
+    // resolve: {
+    //     alias: {
+    //         'react-dom$': 'react-dom/profiling',
+    //         'scheduler/tracing': 'scheduler/tracing-profiling',
+    //     }
+    // },
 };
