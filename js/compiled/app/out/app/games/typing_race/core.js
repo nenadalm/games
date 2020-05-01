@@ -165,11 +165,17 @@ var self__ = this;
 var this$__$1 = this;
 var area_width = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(settings,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$game_DASH_area_SLASH_size,cljs.core.cst$kw$width], null));
 var area_height = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(settings,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$game_DASH_area_SLASH_size,cljs.core.cst$kw$height], null));
-var area_horizontal_center = (area_width / (2));
-var tile_size = (function (){var G__16749 = (area_height / cljs.core.cst$kw$tiles.cljs$core$IFn$_invoke$arity$1(this$__$1));
+var area_horizontal_center = (function (){var G__16749 = (area_width / (2));
 return Math.floor(G__16749);
 })();
+var tile_size = (function (){var G__16750 = (area_height / cljs.core.cst$kw$tiles.cljs$core$IFn$_invoke$arity$1(this$__$1));
+return Math.floor(G__16750);
+})();
 var chars = cljs.core.take.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$tiles.cljs$core$IFn$_invoke$arity$1(this$__$1),cljs.core.cst$kw$chars.cljs$core$IFn$_invoke$arity$1(this$__$1));
+var char_y = (function (i){
+var G__16751 = ((area_height - (((2) + i) * tile_size)) - (tile_size * cljs.core.cst$kw$distance.cljs$core$IFn$_invoke$arity$1(this$__$1)));
+return Math.floor(G__16751);
+});
 goog.object.set(context,"textAlign","center");
 
 goog.object.set(context,"textBaseline","top");
@@ -178,16 +184,18 @@ goog.object.set(context,"font",[cljs.core.str.cljs$core$IFn$_invoke$arity$1(tile
 
 context.clearRect((0),(0),area_width,area_height);
 
-context.fillRect((area_horizontal_center - (tile_size / (2))),(area_height - tile_size),tile_size,tile_size);
+context.fillRect((function (){var G__16752 = (area_horizontal_center - (tile_size / (2)));
+return Math.floor(G__16752);
+})(),(area_height - tile_size),tile_size,tile_size);
 
 var n__4608__auto__ = cljs.core.count(chars);
 var i = (0);
 while(true){
 if((i < n__4608__auto__)){
-context.fillText(cljs.core.nth.cljs$core$IFn$_invoke$arity$2(chars,i),area_horizontal_center,((area_height - (((2) + i) * tile_size)) - (tile_size * cljs.core.cst$kw$distance.cljs$core$IFn$_invoke$arity$1(this$__$1))));
+context.fillText(cljs.core.nth.cljs$core$IFn$_invoke$arity$2(chars,i),area_horizontal_center,char_y(i));
 
-var G__16755 = (i + (1));
-i = G__16755;
+var G__16758 = (i + (1));
+i = G__16758;
 continue;
 } else {
 return null;
@@ -209,8 +217,8 @@ return (new app.games.typing_race.core.TypingRace(self__.__meta,cljs.core.not_em
 (app.games.typing_race.core.TypingRace.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4382__auto__,k__4383__auto__,G__16738){
 var self__ = this;
 var this__4382__auto____$1 = this;
-var pred__16750 = cljs.core.keyword_identical_QMARK_;
-var expr__16751 = k__4383__auto__;
+var pred__16753 = cljs.core.keyword_identical_QMARK_;
+var expr__16754 = k__4383__auto__;
 return (new app.games.typing_race.core.TypingRace(self__.__meta,cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k__4383__auto__,G__16738),null));
 }));
 
@@ -261,11 +269,11 @@ return (new app.games.typing_race.core.TypingRace(null,null,null));
  * Factory function for app.games.typing-race.core/TypingRace, taking a map of keywords to field values.
  */
 app.games.typing_race.core.map__GT_TypingRace = (function app$games$typing_race$core$map__GT_TypingRace(G__16742){
-var extmap__4414__auto__ = (function (){var G__16753 = cljs.core.dissoc.cljs$core$IFn$_invoke$arity$1(G__16742);
+var extmap__4414__auto__ = (function (){var G__16756 = cljs.core.dissoc.cljs$core$IFn$_invoke$arity$1(G__16742);
 if(cljs.core.record_QMARK_(G__16742)){
-return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,G__16753);
+return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,G__16756);
 } else {
-return G__16753;
+return G__16756;
 }
 })();
 return (new app.games.typing_race.core.TypingRace(null,cljs.core.not_empty(extmap__4414__auto__),null));
