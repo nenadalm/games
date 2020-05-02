@@ -21,46 +21,72 @@
                          (.preventDefault e)
                          (re-frame/dispatch [:game.input/key-up (.-key e)])))))
 
-(defn state-label []
+(defn- state-label []
   (let [state @(re-frame/subscribe [:game-state])]
     [:p
      "State: "
      state
      (case state
-       :stopped " (click into the game area to start te game)"
+       :stopped " (click into the game area to start the game)"
        :paused " (click into the game area to continue the game)"
-       :running " (start typing to move forward)"
        "")]))
+
+(defn- typing-race-content []
+  [:<>
+   [:h2.title.is-2 "Description"]
+   [:p
+    "There is a car at the bottom of the game area that would like to move forward, "
+    "but there are some letters in it's way! Your goal is to clear the path by "
+    "shooting the letters by pressing the keys on your keyboard."]
+   [:h2.title.is-2 "Controls"]
+   [:p
+    "Shoot: press letter on keyboard you see in front of the car."]
+   [:h2.title.is-2 "Possible future features"]
+   [:div.content
+    [:ul
+     [:li
+      [:p
+       "Missiles should be launched off the car on key press and once they hit a letter, it should explode."]]
+     [:li
+      [:p
+       "Statistics about typing (speed, accuracy, ...)."]]
+     [:li
+      [:p
+       "Support for keyboards activated by touch (phones, tablets, ...)."]]]]])
+
+(defn- arkanoid-content []
+  [:<>
+   [:h2.title.is-2 "Description"]
+   [:p
+    "This game is work in progress."]
+   [:h2.title.is-2 "Controls"]
+   [:p "Move paddle to left: left arrow"]
+   [:p "Move paddle to right: right arrow"]])
+
+(def ^:private games
+  {:typing-race {:title "Typing race"
+                 :name :typing-race
+                 :content [typing-race-content]}
+   :arkanoid {:title "[WIP]: Arkanoid"
+              :name :arkanoid
+              :content [arkanoid-content]}})
+
+(defn- render-game [game]
+  [:<>
+   [:h1.title.is-1 (:title game)]
+   [:div.columns
+    [:div.column
+     [state-label]
+     [:canvas {:width "400px"
+               :height "400px"
+               :tab-index 1
+               :style {:border "1px solid"}
+               :on-focus #(re-frame/dispatch [:game/resume (:name game)])
+               :on-blur #(re-frame/dispatch [:game/pause])
+               :ref canvas-ref}]]
+    [:div.column
+     (:content game)]]])
 
 (defn app []
   [layout
-   [:<>
-    [:h1.title.is-1 "Typing race"]
-    [:div.columns
-     [:div.column
-      [state-label]
-      [:canvas {:width "400px"
-                :height "400px"
-                :tab-index 1
-                :style {:border "1px solid"}
-                :on-focus #(re-frame/dispatch [:game/resume :typing-race])
-                :on-blur #(re-frame/dispatch [:game/pause])
-                :ref canvas-ref}]]
-     [:div.column
-      [:h2.title.is-2 "Description"]
-      [:p
-       "There is a car at the bottom of the game area that would like to move forward, "
-       "but there are some letters in it's way! Your goal is to clear the path by "
-       "shooting the letters by pressing the keys on your keyboard."]
-      [:h2.title.is-2 "Possible future features"]
-      [:div.content
-       [:ul
-        [:li
-         [:p
-          "Missiles should be launched off the car on key press and once they hit a letter, it should explode."]]
-        [:li
-         [:p
-          "Statistics about typing (speed, accuracy, ...)."]]
-        [:li
-         [:p
-          "Support for keyboards activated by touch (phones, tablets, ...)."]]]]]]]])
+   [render-game (:typing-race games)]])
