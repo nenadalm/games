@@ -1,6 +1,8 @@
 (ns app.math
   (:refer-clojure :exclude [+ - *]))
 
+(def pi 3.14)
+
 (defprotocol Add
   (-+ [this x]))
 
@@ -69,8 +71,8 @@
 (defrecord Point2P [r phi]
   IntoPoint2
   (-into-point2 [this]
-    (Point2. (* r (Math/cos phi))
-             (* r (Math/sin phi)))))
+    (Point2. (clojure.core/* r (Math/cos phi))
+             (clojure.core/* r (Math/sin phi)))))
 
 (defrecord Vector2 [x y]
   Add
@@ -117,6 +119,11 @@
   IntoVector2
   (-into-vector2 [this]
     (Vector2. (:x this) (:y this))))
+
+(extend-type Point2P
+  IntoVector2
+  (-into-vector2 [this]
+    (-into-vector2 (-into-point2 this))))
 
 (extend-type Vector2
   IntoPoint2
