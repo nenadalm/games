@@ -31,9 +31,10 @@
         coef (* (:ball-speed data) delta)
         movement (m/* ball-dir coef)
         requested-pos (m/+ ball-pos movement)
-        max-x (- (get-in data [:game-area/size 0])
+        game-area (:game-area data)
+        max-x (- (:w game-area)
                  (:ball-size data))
-        max-y (- (get-in data [:game-area/size 1])
+        max-y (- (:h game-area)
                  (:ball-size data))
         update-pos (fn [wall-dir wall-line-segment]
                      (let [new-dir (m/reflection ball-dir wall-dir)
@@ -76,7 +77,7 @@
                                      (update pos :x (fn [x]
                                                       (let [dx (* (:paddle-dir data) (:paddle-speed data) (second input))
                                                             new-x (+ x dx)
-                                                            max-x (- (get-in data [:game-area/size 0])
+                                                            max-x (- (get-in data [:game-area :w])
                                                                      (get-in data [:paddle-size 0]))]
                                                         (min max-x (max 0 new-x)))))))
                (update-ball (second input)))
@@ -93,10 +94,10 @@
 (defrecord Arkanoid []
   Game
   (-init [this]
-    (let [game-area-size [400 400]  ;; todo: receive in arguments, make sure it doesn't change
+    (let [game-area (m/Rect. 0 0 400 400)  ;; todo: receive in arguments, make sure it doesn't change
           tiles 10
-          area-horizontal-center (Math/floor (/ (game-area-size 0) 2))
-          tile-size (Math/floor (/ (game-area-size 1) tiles))
+          area-horizontal-center (Math/floor (/ (:w game-area) 2))
+          tile-size (Math/floor (/ (:h game-area) tiles))
           paddle-width (* 2 tile-size)
           paddle-height (/ tile-size 4)
           ball-size paddle-height]
@@ -104,25 +105,25 @@
       (assoc this
              :tiles tiles
              :ball-pos (m/Point2. (Math/floor (- area-horizontal-center (/ ball-size 2)))
-                                  (- (game-area-size 1) paddle-height ball-size))
+                                  (- (:h game-area) paddle-height ball-size))
              :paddle-pos (m/Point2. (Math/floor (- area-horizontal-center (/ paddle-width 2)))
-                                    (- (game-area-size 1) paddle-height))
+                                    (- (:h game-area) paddle-height))
              :ball-speed 0.22
              :paddle-speed 0.22
              :paddle-dir 0
              :paddle-size [paddle-width paddle-height]
              :ball-size paddle-height
              :ball-dir (m/into-vector2 (m/Point2P. 1 (/ m/pi -4)))
-             :game-area/size game-area-size)))
+             :game-area game-area)))
   (-process-inputs [this inputs]
     (reduce process-input this inputs))
   (-render [this _ context]
-    (let [game-area-size (:game-area/size this)
+    (let [game-area (:game-area this)
           ball-size (:ball-size this)
           ball-pos (:ball-pos this)
           paddle-pos (:paddle-pos this)
           paddle-size (:paddle-size this)]
-      (.clearRect context 0 0 (game-area-size 0) (game-area-size 1))
+      (.clearRect context (:x game-area) (:y game-area) (:w game-area) (:h game-area))
       (.fillRect context
                  (:x paddle-pos)
                  (:y paddle-pos)
