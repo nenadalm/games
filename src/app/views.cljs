@@ -12,8 +12,14 @@
     (.addEventListener canvas
                        "keydown"
                        (fn [e]
+                         (.preventDefault e)
                          (when-not (.-repeat e)
-                           (re-frame/dispatch [:game.input/key-down (.-key e)]))))))
+                           (re-frame/dispatch [:game.input/key-down (.-key e)]))))
+    (.addEventListener canvas
+                       "keyup"
+                       (fn [e]
+                         (.preventDefault e)
+                         (re-frame/dispatch [:game.input/key-up (.-key e)])))))
 
 (defn state-label []
   (let [state @(re-frame/subscribe [:game-state])]

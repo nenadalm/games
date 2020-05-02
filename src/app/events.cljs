@@ -1,11 +1,13 @@
 (ns app.events
   (:require
    [re-frame.core :as re-frame]
-   [app.games.typing-race.core :as tr]))
+   [app.games.typing-race.core :refer [->TypingRace]]
+   [app.games.arkanoid.core :refer [->Arkanoid]]))
 
 (def games
   "All available games by their name."
-  {:typing-race (tr/->TypingRace.)})
+  {:typing-race (->TypingRace.)
+   :arkanoid (->Arkanoid.)})
 
 (def canvas
   "Canvas to render current game on."
@@ -53,3 +55,8 @@
  :game.input/key-down
  (fn [_ [_ key]]
    {:game-event [:input [:key-down key]]}))
+
+(re-frame/reg-event-fx
+ :game.input/key-up
+ (fn [_ [_ key]]
+   {:game-event [:input [:key-up key]]}))
