@@ -27,8 +27,9 @@ var ball_pos = cljs.core.cst$kw$ball_DASH_pos.cljs$core$IFn$_invoke$arity$1(data
 var coef = (cljs.core.cst$kw$ball_DASH_speed.cljs$core$IFn$_invoke$arity$1(data) * delta);
 var movement = app.math._STAR_.cljs$core$IFn$_invoke$arity$2(ball_dir,coef);
 var requested_pos = app.math._PLUS_.cljs$core$IFn$_invoke$arity$2(ball_pos,movement);
-var max_x = (cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(data,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$game_DASH_area_SLASH_size,(0)], null)) - cljs.core.cst$kw$ball_DASH_size.cljs$core$IFn$_invoke$arity$1(data));
-var max_y = (cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(data,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$game_DASH_area_SLASH_size,(1)], null)) - cljs.core.cst$kw$ball_DASH_size.cljs$core$IFn$_invoke$arity$1(data));
+var game_area = cljs.core.cst$kw$game_DASH_area.cljs$core$IFn$_invoke$arity$1(data);
+var max_x = (cljs.core.cst$kw$w.cljs$core$IFn$_invoke$arity$1(game_area) - cljs.core.cst$kw$ball_DASH_size.cljs$core$IFn$_invoke$arity$1(data));
+var max_y = (cljs.core.cst$kw$h.cljs$core$IFn$_invoke$arity$1(game_area) - cljs.core.cst$kw$ball_DASH_size.cljs$core$IFn$_invoke$arity$1(data));
 var update_pos = (function (wall_dir,wall_line_segment){
 var new_dir = app.math.reflection(ball_dir,wall_dir);
 var ip = app.games.arkanoid.core.intersection_point((new app.math.LineSegment(ball_pos,requested_pos,null,null,null)),wall_line_segment);
@@ -56,15 +57,15 @@ return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(data,cljs.core.cst$kw$ball_
 }
 });
 app.games.arkanoid.core.process_input = (function app$games$arkanoid$core$process_input(data,input){
-var G__13754 = cljs.core.first(input);
-var G__13754__$1 = (((G__13754 instanceof cljs.core.Keyword))?G__13754.fqn:null);
-switch (G__13754__$1) {
+var G__13778 = cljs.core.first(input);
+var G__13778__$1 = (((G__13778 instanceof cljs.core.Keyword))?G__13778.fqn:null);
+switch (G__13778__$1) {
 case "delta":
 return app.games.arkanoid.core.update_ball(cljs.core.update.cljs$core$IFn$_invoke$arity$3(data,cljs.core.cst$kw$paddle_DASH_pos,(function (pos){
 return cljs.core.update.cljs$core$IFn$_invoke$arity$3(pos,cljs.core.cst$kw$x,(function (x){
 var dx = ((cljs.core.cst$kw$paddle_DASH_dir.cljs$core$IFn$_invoke$arity$1(data) * cljs.core.cst$kw$paddle_DASH_speed.cljs$core$IFn$_invoke$arity$1(data)) * cljs.core.second(input));
 var new_x = (x + dx);
-var max_x = (cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(data,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$game_DASH_area_SLASH_size,(0)], null)) - cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(data,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$paddle_DASH_size,(0)], null)));
+var max_x = (cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(data,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$game_DASH_area,cljs.core.cst$kw$w], null)) - cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(data,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$paddle_DASH_size,(0)], null)));
 var x__4276__auto__ = max_x;
 var y__4277__auto__ = (function (){var x__4273__auto__ = (0);
 var y__4274__auto__ = new_x;
@@ -76,8 +77,8 @@ return ((x__4276__auto__ < y__4277__auto__) ? x__4276__auto__ : y__4277__auto__)
 
 break;
 case "key-down":
-var G__13755 = cljs.core.second(input);
-switch (G__13755) {
+var G__13779 = cljs.core.second(input);
+switch (G__13779) {
 case "ArrowLeft":
 return cljs.core.update.cljs$core$IFn$_invoke$arity$3(data,cljs.core.cst$kw$paddle_DASH_dir,cljs.core.dec);
 
@@ -93,8 +94,8 @@ return data;
 
 break;
 case "key-up":
-var G__13756 = cljs.core.second(input);
-switch (G__13756) {
+var G__13780 = cljs.core.second(input);
+switch (G__13780) {
 case "ArrowLeft":
 return cljs.core.update.cljs$core$IFn$_invoke$arity$3(data,cljs.core.cst$kw$paddle_DASH_dir,cljs.core.inc);
 
@@ -147,13 +148,13 @@ var this__4439__auto____$1 = this;
 return this__4439__auto____$1.cljs$core$ILookup$_lookup$arity$3(null,k__4440__auto__,null);
 }));
 
-(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4441__auto__,k13761,else__4442__auto__){
+(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4441__auto__,k13785,else__4442__auto__){
 var self__ = this;
 var this__4441__auto____$1 = this;
-var G__13765 = k13761;
-switch (G__13765) {
+var G__13789 = k13785;
+switch (G__13789) {
 default:
-return cljs.core.get.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k13761,else__4442__auto__);
+return cljs.core.get.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k13785,else__4442__auto__);
 
 }
 }));
@@ -161,10 +162,10 @@ return cljs.core.get.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k13761,else__
 (app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IKVReduce$_kv_reduce$arity$3 = (function (this__4458__auto__,f__4459__auto__,init__4460__auto__){
 var self__ = this;
 var this__4458__auto____$1 = this;
-return cljs.core.reduce.cljs$core$IFn$_invoke$arity$3((function (ret__4461__auto__,p__13766){
-var vec__13767 = p__13766;
-var k__4462__auto__ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__13767,(0),null);
-var v__4463__auto__ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__13767,(1),null);
+return cljs.core.reduce.cljs$core$IFn$_invoke$arity$3((function (ret__4461__auto__,p__13790){
+var vec__13791 = p__13790;
+var k__4462__auto__ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__13791,(0),null);
+var v__4463__auto__ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__13791,(1),null);
 return (f__4459__auto__.cljs$core$IFn$_invoke$arity$3 ? f__4459__auto__.cljs$core$IFn$_invoke$arity$3(ret__4461__auto__,k__4462__auto__,v__4463__auto__) : f__4459__auto__.call(null,ret__4461__auto__,k__4462__auto__,v__4463__auto__));
 }),init__4460__auto__,this__4458__auto____$1);
 }));
@@ -178,10 +179,10 @@ return cljs.core.pr_sequential_writer(writer__4454__auto__,cljs.core.pr_writer,"
 return cljs.core.pr_sequential_writer(writer__4454__auto__,pr_pair__4456__auto__,"#app.games.arkanoid.core.Arkanoid{",", ","}",opts__4455__auto__,cljs.core.concat.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentVector.EMPTY,self__.__extmap));
 }));
 
-(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__13760){
+(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__13784){
 var self__ = this;
-var G__13760__$1 = this;
-return (new cljs.core.RecordIter((0),G__13760__$1,0,cljs.core.PersistentVector.EMPTY,(cljs.core.truth_(self__.__extmap)?cljs.core._iterator(self__.__extmap):cljs.core.nil_iter())));
+var G__13784__$1 = this;
+return (new cljs.core.RecordIter((0),G__13784__$1,0,cljs.core.PersistentVector.EMPTY,(cljs.core.truth_(self__.__extmap)?cljs.core._iterator(self__.__extmap):cljs.core.nil_iter())));
 }));
 
 (app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IMeta$_meta$arity$1 = (function (this__4437__auto__){
@@ -209,10 +210,10 @@ var h__4297__auto__ = self__.__hash;
 if((!((h__4297__auto__ == null)))){
 return h__4297__auto__;
 } else {
-var h__4297__auto____$1 = (function (){var fexpr__13770 = (function (coll__4436__auto__){
+var h__4297__auto____$1 = (function (){var fexpr__13794 = (function (coll__4436__auto__){
 return (-2006909491 ^ cljs.core.hash_unordered_coll(coll__4436__auto__));
 });
-return fexpr__13770(this__4435__auto____$1);
+return fexpr__13794(this__4435__auto____$1);
 })();
 (self__.__hash = h__4297__auto____$1);
 
@@ -220,10 +221,10 @@ return h__4297__auto____$1;
 }
 }));
 
-(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IEquiv$_equiv$arity$2 = (function (this13762,other13763){
+(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IEquiv$_equiv$arity$2 = (function (this13786,other13787){
 var self__ = this;
-var this13762__$1 = this;
-return (((!((other13763 == null)))) && ((this13762__$1.constructor === other13763.constructor)) && (cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(this13762__$1.__extmap,other13763.__extmap)));
+var this13786__$1 = this;
+return (((!((other13787 == null)))) && ((this13786__$1.constructor === other13787.constructor)) && (cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(this13786__$1.__extmap,other13787.__extmap)));
 }));
 
 (app.games.arkanoid.core.Arkanoid.prototype.app$game$Game$ = cljs.core.PROTOCOL_SENTINEL);
@@ -231,22 +232,22 @@ return (((!((other13763 == null)))) && ((this13762__$1.constructor === other1376
 (app.games.arkanoid.core.Arkanoid.prototype.app$game$Game$_init$arity$1 = (function (this$){
 var self__ = this;
 var this$__$1 = this;
-var game_area_size = new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(400),(400)], null);
+var game_area = (new app.math.Rect((0),(0),(400),(400),null,null,null));
 var tiles = (10);
-var area_horizontal_center = (function (){var G__13771 = ((game_area_size.cljs$core$IFn$_invoke$arity$1 ? game_area_size.cljs$core$IFn$_invoke$arity$1((0)) : game_area_size.call(null,(0))) / (2));
-return Math.floor(G__13771);
+var area_horizontal_center = (function (){var G__13795 = (game_area.w / (2));
+return Math.floor(G__13795);
 })();
-var tile_size = (function (){var G__13772 = ((game_area_size.cljs$core$IFn$_invoke$arity$1 ? game_area_size.cljs$core$IFn$_invoke$arity$1((1)) : game_area_size.call(null,(1))) / tiles);
-return Math.floor(G__13772);
+var tile_size = (function (){var G__13796 = (game_area.h / tiles);
+return Math.floor(G__13796);
 })();
 var paddle_width = ((2) * tile_size);
 var paddle_height = (tile_size / (4));
 var ball_size = paddle_height;
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$variadic(this$__$1,cljs.core.cst$kw$tiles,tiles,cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([cljs.core.cst$kw$ball_DASH_pos,(new app.math.Point2((function (){var G__13773 = (area_horizontal_center - (ball_size / (2)));
-return Math.floor(G__13773);
-})(),(((game_area_size.cljs$core$IFn$_invoke$arity$1 ? game_area_size.cljs$core$IFn$_invoke$arity$1((1)) : game_area_size.call(null,(1))) - paddle_height) - ball_size),null,null,null)),cljs.core.cst$kw$paddle_DASH_pos,(new app.math.Point2((function (){var G__13774 = (area_horizontal_center - (paddle_width / (2)));
-return Math.floor(G__13774);
-})(),((game_area_size.cljs$core$IFn$_invoke$arity$1 ? game_area_size.cljs$core$IFn$_invoke$arity$1((1)) : game_area_size.call(null,(1))) - paddle_height),null,null,null)),cljs.core.cst$kw$ball_DASH_speed,0.22,cljs.core.cst$kw$paddle_DASH_speed,0.22,cljs.core.cst$kw$paddle_DASH_dir,(0),cljs.core.cst$kw$paddle_DASH_size,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [paddle_width,paddle_height], null),cljs.core.cst$kw$ball_DASH_size,paddle_height,cljs.core.cst$kw$ball_DASH_dir,app.math.into_vector2((new app.math.Point2P((1),(app.math.pi / (-4)),null,null,null))),cljs.core.cst$kw$game_DASH_area_SLASH_size,game_area_size], 0));
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$variadic(this$__$1,cljs.core.cst$kw$tiles,tiles,cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([cljs.core.cst$kw$ball_DASH_pos,(new app.math.Point2((function (){var G__13797 = (area_horizontal_center - (ball_size / (2)));
+return Math.floor(G__13797);
+})(),((game_area.h - paddle_height) - ball_size),null,null,null)),cljs.core.cst$kw$paddle_DASH_pos,(new app.math.Point2((function (){var G__13798 = (area_horizontal_center - (paddle_width / (2)));
+return Math.floor(G__13798);
+})(),(game_area.h - paddle_height),null,null,null)),cljs.core.cst$kw$ball_DASH_speed,0.22,cljs.core.cst$kw$paddle_DASH_speed,0.22,cljs.core.cst$kw$paddle_DASH_dir,(0),cljs.core.cst$kw$paddle_DASH_size,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [paddle_width,paddle_height], null),cljs.core.cst$kw$ball_DASH_size,paddle_height,cljs.core.cst$kw$ball_DASH_dir,app.math.into_vector2((new app.math.Point2P((1),(app.math.pi / (-4)),null,null,null))),cljs.core.cst$kw$game_DASH_area,game_area], 0));
 }));
 
 (app.games.arkanoid.core.Arkanoid.prototype.app$game$Game$_process_inputs$arity$2 = (function (this$,inputs){
@@ -258,12 +259,12 @@ return cljs.core.reduce.cljs$core$IFn$_invoke$arity$3(app.games.arkanoid.core.pr
 (app.games.arkanoid.core.Arkanoid.prototype.app$game$Game$_render$arity$3 = (function (this$,_,context){
 var self__ = this;
 var this$__$1 = this;
-var game_area_size = cljs.core.cst$kw$game_DASH_area_SLASH_size.cljs$core$IFn$_invoke$arity$1(this$__$1);
+var game_area = cljs.core.cst$kw$game_DASH_area.cljs$core$IFn$_invoke$arity$1(this$__$1);
 var ball_size = cljs.core.cst$kw$ball_DASH_size.cljs$core$IFn$_invoke$arity$1(this$__$1);
 var ball_pos = cljs.core.cst$kw$ball_DASH_pos.cljs$core$IFn$_invoke$arity$1(this$__$1);
 var paddle_pos = cljs.core.cst$kw$paddle_DASH_pos.cljs$core$IFn$_invoke$arity$1(this$__$1);
 var paddle_size = cljs.core.cst$kw$paddle_DASH_size.cljs$core$IFn$_invoke$arity$1(this$__$1);
-context.clearRect((0),(0),(game_area_size.cljs$core$IFn$_invoke$arity$1 ? game_area_size.cljs$core$IFn$_invoke$arity$1((0)) : game_area_size.call(null,(0))),(game_area_size.cljs$core$IFn$_invoke$arity$1 ? game_area_size.cljs$core$IFn$_invoke$arity$1((1)) : game_area_size.call(null,(1))));
+context.clearRect(cljs.core.cst$kw$x.cljs$core$IFn$_invoke$arity$1(game_area),cljs.core.cst$kw$y.cljs$core$IFn$_invoke$arity$1(game_area),cljs.core.cst$kw$w.cljs$core$IFn$_invoke$arity$1(game_area),cljs.core.cst$kw$h.cljs$core$IFn$_invoke$arity$1(game_area));
 
 context.fillRect(cljs.core.cst$kw$x.cljs$core$IFn$_invoke$arity$1(paddle_pos),cljs.core.cst$kw$y.cljs$core$IFn$_invoke$arity$1(paddle_pos),(paddle_size.cljs$core$IFn$_invoke$arity$1 ? paddle_size.cljs$core$IFn$_invoke$arity$1((0)) : paddle_size.call(null,(0))),(paddle_size.cljs$core$IFn$_invoke$arity$1 ? paddle_size.cljs$core$IFn$_invoke$arity$1((1)) : paddle_size.call(null,(1))));
 
@@ -280,12 +281,12 @@ return (new app.games.arkanoid.core.Arkanoid(self__.__meta,cljs.core.not_empty(c
 }
 }));
 
-(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4446__auto__,k__4447__auto__,G__13760){
+(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4446__auto__,k__4447__auto__,G__13784){
 var self__ = this;
 var this__4446__auto____$1 = this;
-var pred__13775 = cljs.core.keyword_identical_QMARK_;
-var expr__13776 = k__4447__auto__;
-return (new app.games.arkanoid.core.Arkanoid(self__.__meta,cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k__4447__auto__,G__13760),null));
+var pred__13799 = cljs.core.keyword_identical_QMARK_;
+var expr__13800 = k__4447__auto__;
+return (new app.games.arkanoid.core.Arkanoid(self__.__meta,cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(self__.__extmap,k__4447__auto__,G__13784),null));
 }));
 
 (app.games.arkanoid.core.Arkanoid.prototype.cljs$core$ISeqable$_seq$arity$1 = (function (this__4451__auto__){
@@ -294,10 +295,10 @@ var this__4451__auto____$1 = this;
 return cljs.core.seq(cljs.core.concat.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentVector.EMPTY,self__.__extmap));
 }));
 
-(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4438__auto__,G__13760){
+(app.games.arkanoid.core.Arkanoid.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4438__auto__,G__13784){
 var self__ = this;
 var this__4438__auto____$1 = this;
-return (new app.games.arkanoid.core.Arkanoid(G__13760,self__.__extmap,self__.__hash));
+return (new app.games.arkanoid.core.Arkanoid(G__13784,self__.__extmap,self__.__hash));
 }));
 
 (app.games.arkanoid.core.Arkanoid.prototype.cljs$core$ICollection$_conj$arity$2 = (function (this__4444__auto__,entry__4445__auto__){
@@ -334,12 +335,12 @@ return (new app.games.arkanoid.core.Arkanoid(null,null,null));
 /**
  * Factory function for app.games.arkanoid.core/Arkanoid, taking a map of keywords to field values.
  */
-app.games.arkanoid.core.map__GT_Arkanoid = (function app$games$arkanoid$core$map__GT_Arkanoid(G__13764){
-var extmap__4478__auto__ = (function (){var G__13778 = cljs.core.dissoc.cljs$core$IFn$_invoke$arity$1(G__13764);
-if(cljs.core.record_QMARK_(G__13764)){
-return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,G__13778);
+app.games.arkanoid.core.map__GT_Arkanoid = (function app$games$arkanoid$core$map__GT_Arkanoid(G__13788){
+var extmap__4478__auto__ = (function (){var G__13802 = cljs.core.dissoc.cljs$core$IFn$_invoke$arity$1(G__13788);
+if(cljs.core.record_QMARK_(G__13788)){
+return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,G__13802);
 } else {
-return G__13778;
+return G__13802;
 }
 })();
 return (new app.games.arkanoid.core.Arkanoid(null,cljs.core.not_empty(extmap__4478__auto__),null));

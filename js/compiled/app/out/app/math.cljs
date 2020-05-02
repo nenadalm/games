@@ -112,6 +112,8 @@
 
 (defrecord LineSegment [p1 p2])
 
+(defrecord Rect [x y w h])
+
 (extend-type Point2
   IntoPoint2
   (-into-point2 [this]
