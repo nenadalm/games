@@ -43,11 +43,10 @@ goog.net.XmlHttp = function() {
  *     true bypasses the ActiveX probing code.
  * NOTE(ruilopes): Due to the way JSCompiler works, this define *will not* strip
  * out the ActiveX probing code from binaries.  To achieve this, use
- * `goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR` instead.
+ * {@code goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR} instead.
  * TODO(ruilopes): Collapse both defines.
  */
-goog.net.XmlHttp.ASSUME_NATIVE_XHR =
-    goog.define('goog.net.XmlHttp.ASSUME_NATIVE_XHR', false);
+goog.define('goog.net.XmlHttp.ASSUME_NATIVE_XHR', false);
 
 
 /** @const */
@@ -58,8 +57,7 @@ goog.net.XmlHttpDefines = {};
  * @define {boolean} Whether to assume XMLHttpRequest exists. Setting this to
  *     true eliminates the ActiveX probing code.
  */
-goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR =
-    goog.define('goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR', false);
+goog.define('goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR', false);
 
 
 /**
@@ -237,7 +235,7 @@ goog.net.DefaultXmlHttpFactory.prototype.getProgId_ = function() {
     }
 
     // couldn't find any matches
-    throw new Error(
+    throw Error(
         'Could not create ActiveXObject. ActiveX might be disabled,' +
         ' or MSXML might not be installed');
   }

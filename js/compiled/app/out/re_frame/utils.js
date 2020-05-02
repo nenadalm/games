@@ -1,4 +1,4 @@
-// Compiled by ClojureScript 1.10.748 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.597 {:static-fns true, :optimize-constants true}
 goog.provide('re_frame.utils');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
@@ -9,18 +9,18 @@ goog.require('re_frame.loggers');
  *   will not be present in the new structure.
  *   The key thing is that 'm' remains identical? to istelf if the path was never present
  */
-re_frame.utils.dissoc_in = (function re_frame$utils$dissoc_in(m,p__13292){
-var vec__13293 = p__13292;
-var seq__13294 = cljs.core.seq(vec__13293);
-var first__13295 = cljs.core.first(seq__13294);
-var seq__13294__$1 = cljs.core.next(seq__13294);
-var k = first__13295;
-var ks = seq__13294__$1;
-var keys = vec__13293;
+re_frame.utils.dissoc_in = (function re_frame$utils$dissoc_in(m,p__13253){
+var vec__13254 = p__13253;
+var seq__13255 = cljs.core.seq(vec__13254);
+var first__13256 = cljs.core.first(seq__13255);
+var seq__13255__$1 = cljs.core.next(seq__13255);
+var k = first__13256;
+var ks = seq__13255__$1;
+var keys = vec__13254;
 if(ks){
-var temp__5718__auto__ = cljs.core.get.cljs$core$IFn$_invoke$arity$2(m,k);
-if(cljs.core.truth_(temp__5718__auto__)){
-var nextmap = temp__5718__auto__;
+var temp__5733__auto__ = cljs.core.get.cljs$core$IFn$_invoke$arity$2(m,k);
+if(cljs.core.truth_(temp__5733__auto__)){
+var nextmap = temp__5733__auto__;
 var newmap = (re_frame.utils.dissoc_in.cljs$core$IFn$_invoke$arity$2 ? re_frame.utils.dissoc_in.cljs$core$IFn$_invoke$arity$2(nextmap,ks) : re_frame.utils.dissoc_in.call(null,nextmap,ks));
 if(cljs.core.seq(newmap)){
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(m,k,newmap);

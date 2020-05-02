@@ -15,9 +15,14 @@
 /**
  * @fileoverview A map of listeners that provides utility functions to
  * deal with listeners on an event target. Used by
- * `goog.events.EventTarget`.
+ * {@code goog.events.EventTarget}.
  *
  * WARNING: Do not use this class from outside goog.events package.
+ *
+ * @visibility {//closure/goog/bin/sizetests:__pkg__}
+ * @visibility {//closure/goog:__pkg__}
+ * @visibility {//closure/goog/events:__pkg__}
+ * @visibility {//closure/goog/labs/events:__pkg__}
  */
 
 goog.provide('goog.events.ListenerMap');
@@ -260,9 +265,9 @@ goog.events.ListenerMap.prototype.getListener = function(
  */
 goog.events.ListenerMap.prototype.hasListener = function(
     opt_type, opt_capture) {
-  var hasType = (opt_type !== undefined);
+  var hasType = goog.isDef(opt_type);
   var typeStr = hasType ? opt_type.toString() : '';
-  var hasCapture = (opt_capture !== undefined);
+  var hasCapture = goog.isDef(opt_capture);
 
   return goog.object.some(this.listeners, function(listenerArray, type) {
     for (var i = 0; i < listenerArray.length; ++i) {

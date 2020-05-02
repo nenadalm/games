@@ -18,12 +18,6 @@ goog.require('goog.async.WorkQueue');
 goog.require('goog.async.nextTick');
 goog.require('goog.async.throwException');
 
-/**
- * @define {boolean} If true, use the global Promise to implement goog.async.run
- * assuming either the native, or polyfill version will be used. Does still
- * permit tests to use forceNextTick.
- */
-goog.ASSUME_NATIVE_PROMISE = goog.define('goog.ASSUME_NATIVE_PROMISE', false);
 
 /**
  * Fires the provided callback just before the current callstack unwinds, or as
@@ -52,12 +46,13 @@ goog.async.run = function(callback, opt_context) {
  * @private
  */
 goog.async.run.initializeRunner_ = function() {
-  if (goog.ASSUME_NATIVE_PROMISE ||
-      (goog.global.Promise && goog.global.Promise.resolve)) {
-    // Use goog.global.Promise instead of just Promise because the relevant
-    // externs may be missing, and don't alias it because this could confuse the
-    // compiler into thinking the polyfill is required when it should be treated
-    // as optional.
+  // If native Promises are available in the browser, just schedule the callback
+  // on a fulfilled promise, which is specified to be async, but as fast as
+  // possible.  Use goog.global.Promise instead of just Promise because the
+  // relevant externs may be missing, and don't alias it because this could
+  // confuse the compiler into thinking the polyfill is required when it should
+  // be treated as optional.
+  if (String(goog.global.Promise).indexOf('[native code]') != -1) {
     var promise = goog.global.Promise.resolve(undefined);
     goog.async.run.schedule_ = function() {
       promise.then(goog.async.run.processWorkQueue);

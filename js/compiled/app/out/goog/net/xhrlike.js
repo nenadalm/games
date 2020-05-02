@@ -42,24 +42,10 @@ goog.net.XhrLike.prototype.onreadystatechange;
 
 
 /**
- * @type {?ArrayBuffer|?Blob|?Document|?Object|?string}
- * @see https://xhr.spec.whatwg.org/#response-object
- */
-goog.net.XhrLike.prototype.response;
-
-
-/**
  * @type {string}
  * @see http://www.w3.org/TR/XMLHttpRequest/#the-responsetext-attribute
  */
 goog.net.XhrLike.prototype.responseText;
-
-
-/**
- * @type {string}
- * @see https://xhr.spec.whatwg.org/#the-responsetype-attribute
- */
-goog.net.XhrLike.prototype.responseType;
 
 
 /**

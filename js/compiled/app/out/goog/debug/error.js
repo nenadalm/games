@@ -37,15 +37,13 @@ goog.debug.Error = function(opt_msg) {
   if (Error.captureStackTrace) {
     Error.captureStackTrace(this, goog.debug.Error);
   } else {
-    const stack = new Error().stack;
+    var stack = new Error().stack;
     if (stack) {
-      /** @override */
       this.stack = stack;
     }
   }
 
   if (opt_msg) {
-    /** @override */
     this.message = String(opt_msg);
   }
 

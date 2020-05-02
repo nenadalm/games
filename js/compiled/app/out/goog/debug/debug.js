@@ -26,13 +26,11 @@ goog.require('goog.userAgent');
 
 
 /** @define {boolean} Whether logging should be enabled. */
-goog.debug.LOGGING_ENABLED =
-    goog.define('goog.debug.LOGGING_ENABLED', goog.DEBUG);
+goog.define('goog.debug.LOGGING_ENABLED', goog.DEBUG);
 
 
 /** @define {boolean} Whether to force "sloppy" stack building. */
-goog.debug.FORCE_SLOPPY_STACKS =
-    goog.define('goog.debug.FORCE_SLOPPY_STACKS', false);
+goog.define('goog.debug.FORCE_SLOPPY_STACKS', false);
 
 
 /**
@@ -42,8 +40,6 @@ goog.debug.FORCE_SLOPPY_STACKS =
  * @param {boolean=} opt_cancel Whether to stop the error from reaching the
  *    browser.
  * @param {Object=} opt_target Object that fires onerror events.
- * @suppress {strictMissingProperties} onerror is not defined as a property
- *    on Object.
  */
 goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
   var target = opt_target || goog.global;
@@ -94,7 +90,6 @@ goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
       message: message,
       fileName: url,
       line: line,
-      lineNumber: line,
       col: opt_col,
       error: opt_error
     });
@@ -108,7 +103,7 @@ goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
  * @param {Object|null|undefined} obj Object to expose.
  * @param {boolean=} opt_showFn Show the functions as well as the properties,
  *     default is false.
- * @return {string} The string representation of `obj`.
+ * @return {string} The string representation of {@code obj}.
  */
 goog.debug.expose = function(obj, opt_showFn) {
   if (typeof obj == 'undefined') {
@@ -144,7 +139,7 @@ goog.debug.expose = function(obj, opt_showFn) {
  * @param {*} obj Object to expose.
  * @param {boolean=} opt_showFn Also show properties that are functions (by
  *     default, functions are omitted).
- * @return {string} A string representation of `obj`.
+ * @return {string} A string representation of {@code obj}.
  */
 goog.debug.deepExpose = function(obj, opt_showFn) {
   var str = [];
@@ -164,11 +159,11 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
 
 
     try {
-      if (obj === undefined) {
+      if (!goog.isDef(obj)) {
         str.push('undefined');
-      } else if (obj === null) {
+      } else if (goog.isNull(obj)) {
         str.push('NULL');
-      } else if (typeof obj === 'string') {
+      } else if (goog.isString(obj)) {
         str.push('"' + indentMultiline(obj) + '"');
       } else if (goog.isFunction(obj)) {
         str.push(indentMultiline(String(obj)));
@@ -235,21 +230,17 @@ goog.debug.exposeArray = function(arr) {
 /**
  * Normalizes the error/exception object between browsers.
  * @param {*} err Raw error object.
- * @return {{
+ * @return {!{
  *    message: (?|undefined),
  *    name: (?|undefined),
  *    lineNumber: (?|undefined),
  *    fileName: (?|undefined),
  *    stack: (?|undefined)
  * }} Normalized error object.
- * @suppress {strictMissingProperties} properties not defined on err
  */
 goog.debug.normalizeErrorObject = function(err) {
   var href = goog.getObjectByName('window.location.href');
-  if (err == null) {
-    err = 'Unknown Error of type "null/undefined"';
-  }
-  if (typeof err === 'string') {
+  if (goog.isString(err)) {
     return {
       'message': err,
       'name': 'Unknown error',
@@ -286,19 +277,8 @@ goog.debug.normalizeErrorObject = function(err) {
   // The Safari Error object uses the line and sourceURL fields.
   if (threwError || !err.lineNumber || !err.fileName || !err.stack ||
       !err.message || !err.name) {
-    var message = err.message;
-    if (message == null) {
-      if (err.constructor && err.constructor instanceof Function) {
-        var ctorName = err.constructor.name ?
-            err.constructor.name :
-            goog.debug.getFunctionName(err.constructor);
-        message = 'Unknown Error of type "' + ctorName + '"';
-      } else {
-        message = 'Unknown Error of unknown type';
-      }
-    }
     return {
-      'message': message,
+      'message': err.message || 'Not available',
       'name': err.name || 'UnknownError',
       'lineNumber': lineNumber,
       'fileName': fileName,
@@ -557,6 +537,16 @@ goog.debug.getStacktraceHelper_ = function(fn, visited) {
 
 
 /**
+ * Set a custom function name resolver.
+ * @param {function(Function): string} resolver Resolves functions to their
+ *     names.
+ */
+goog.debug.setFunctionResolver = function(resolver) {
+  goog.debug.fnNameResolver_ = resolver;
+};
+
+
+/**
  * Gets a function name
  * @param {Function} fn Function to get name of.
  * @return {string} Function's name.
@@ -565,11 +555,18 @@ goog.debug.getFunctionName = function(fn) {
   if (goog.debug.fnNameCache_[fn]) {
     return goog.debug.fnNameCache_[fn];
   }
+  if (goog.debug.fnNameResolver_) {
+    var name = goog.debug.fnNameResolver_(fn);
+    if (name) {
+      goog.debug.fnNameCache_[fn] = name;
+      return name;
+    }
+  }
 
   // Heuristically determine function name based on code.
   var functionSource = String(fn);
   if (!goog.debug.fnNameCache_[functionSource]) {
-    var matches = /function\s+([^\(]+)/m.exec(functionSource);
+    var matches = /function ([^\(]+)/.exec(functionSource);
     if (matches) {
       var method = matches[1];
       goog.debug.fnNameCache_[functionSource] = method;
@@ -611,8 +608,8 @@ goog.debug.runtimeType = function(value) {
   if (value instanceof Function) {
     return value.displayName || value.name || 'unknown type name';
   } else if (value instanceof Object) {
-    return /** @type {string} */ (value.constructor.displayName) ||
-        value.constructor.name || Object.prototype.toString.call(value);
+    return value.constructor.displayName || value.constructor.name ||
+        Object.prototype.toString.call(value);
   } else {
     return value === null ? 'null' : typeof value;
   }
@@ -628,32 +625,8 @@ goog.debug.fnNameCache_ = {};
 
 
 /**
- * Private internal function to support goog.debug.freeze.
- * @param {T} arg
- * @return {T}
- * @template T
+ * Resolves functions to their names.  Resolved function names will be cached.
+ * @type {function(Function):string}
  * @private
  */
-goog.debug.freezeInternal_ = goog.DEBUG && Object.freeze || function(arg) {
-  return arg;
-};
-
-
-/**
- * Freezes the given object, but only in debug mode (and in browsers that
- * support it).  Note that this is a shallow freeze, so for deeply nested
- * objects it must be called at every level to ensure deep immutability.
- * @param {T} arg
- * @return {T}
- * @template T
- */
-goog.debug.freeze = function(arg) {
-  // NOTE: this compiles to nothing, but hides the possible side effect of
-  // freezeInternal_ from the compiler so that the entire call can be
-  // removed if the result is not used.
-  return {
-    valueOf: function() {
-      return goog.debug.freezeInternal_(arg);
-    }
-  }.valueOf();
-};
+goog.debug.fnNameResolver_;
