@@ -1,15 +1,8 @@
 (ns app.events
   (:require
-   [re-frame.core :as re-frame]
-   [app.games.typing-race.core :refer [->TypingRace]]
-   [app.games.arkanoid.core :refer [->Arkanoid]]))
+   [re-frame.core :as re-frame]))
 
-(def games
-  "All available games by their name."
-  {:typing-race (->TypingRace.)
-   :arkanoid (->Arkanoid.)})
-
-(def canvas
+(def ^:private canvas
   "Canvas to render current game on."
   (volatile! nil))
 
@@ -30,11 +23,18 @@
     :game-event [:replace-canvas new-canvas]}))
 
 (re-frame/reg-event-fx
+ :init
+ (fn [{:keys [db]}]
+   {:db (assoc db :page {:name :typing-race})}))
+
+(re-frame/reg-event-fx
  :game/start
  [(re-frame/inject-cofx :canvas)]
- (fn [{:keys [db canvas]} [_ game]]
-   {:db (assoc db :game/state :running)
-    :game-event [:start {:game (games game)
+ (fn [{:keys [db canvas]} [_ game-name game]]
+   {:db (assoc db
+               :game/state :running
+               :game/name game-name)
+    :game-event [:start {:game game
                          :canvas canvas}]}))
 
 (re-frame/reg-event-fx
@@ -45,9 +45,10 @@
 
 (re-frame/reg-event-fx
  :game/resume
- (fn [{:keys [db]} [_ game]]
-   (if (= :stopped (:game/state db :stopped))
-     {:dispatch [:game/start game]}
+ (fn [{:keys [db]} [_ game-name game]]
+   (if (or (not= game-name (:game/name db))
+           (= :stopped (:game/state db :stopped)))
+     {:dispatch [:game/start game-name game]}
      {:db (assoc db :game/state :running)
       :game-event [:resume]})))
 
@@ -60,3 +61,11 @@
  :game.input/key-up
  (fn [_ [_ key]]
    {:game-event [:input [:key-up key]]}))
+
+(re-frame/reg-event-fx
+ :open-page
+ (fn [{:keys [db]} [_ page]]
+   {:db (assoc db
+               :page {:name page}
+               :game/state :stopped)
+    :game-event [:stop]}))

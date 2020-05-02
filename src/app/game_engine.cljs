@@ -5,6 +5,12 @@
 
 (defonce ^:private game-state (volatile! {}))
 
+(defonce ^:private initial-state
+  {:inputs []
+   :running false
+   :settings {}
+   :prev-time nil})
+
 (defn- replace-canvas [state canvas]
   (if canvas
     (let [context (.getContext canvas "2d")]
@@ -23,19 +29,21 @@
 (defn- game-iter
   "Runs single iteration of the game loop (update, render). Returns state."
   [state current-time]
-  (let [delta (- current-time (:prev-time state))
-        inputs (if (:running state)
-                 (conj (:inputs state) [:delta delta])
-                 (:inputs state))
-        game (game/process-inputs (:game state) inputs)
-        updated-state (assoc state
-                             :game game
-                             :inputs []
-                             :prev-time current-time)
-        context (:context updated-state)]
-    (when context
-      (game/render game (:settings updated-state) context))
-    updated-state))
+  (if-let [running-game (:game state)]
+    (let [delta (- current-time (:prev-time state))
+          inputs (if (:running state)
+                   (conj (:inputs state) [:delta delta])
+                   (:inputs state))
+          game (game/process-inputs running-game inputs)
+          updated-state (assoc state
+                               :game game
+                               :inputs []
+                               :prev-time current-time)
+          context (:context updated-state)]
+      (when context
+        (game/render game (:settings updated-state) context))
+      updated-state)
+    state))
 
 (defn- start-game
   "Initializes game. Returns initial game state."
@@ -58,17 +66,18 @@
     :start (do
              (.requestAnimationFrame js/window #(vswap! game-state process-event! [:loop %]))
              (start-game (second event)))
-    :stop (assoc state :running false)
+    :stop (do
+            (when-let [context (:context state)]
+              (let [{:keys [width height]} (get-in state [:settings :game-area/size])]
+                (.clearRect context 0 0 width height)))
+            initial-state)
     :pause (assoc state :running false)
     :resume (unpause state)
     :replace-canvas (replace-canvas state (second event))
     state))
 
 (defn init []
-  (vreset! game-state {:inputs []
-                       :running false
-                       :settings {}
-                       :prev-time nil}))
+  (vreset! game-state initial-state))
 
 (re-frame/reg-fx
  :game-event

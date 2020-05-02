@@ -7,3 +7,7 @@
  (fn [db _]
    (:game/state db :stopped)))
 
+(re-frame/reg-sub
+ :page-name
+ (fn [db _]
+   (get-in db [:page :name])))

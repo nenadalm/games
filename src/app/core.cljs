@@ -26,6 +26,7 @@
     (.addEventListener js/window "error" (fn [^js/ErrorEvent e] (error (.-error e)))))
   (dev-setup)
   (game-engine/init)
+  (re-frame/dispatch-sync [:init])
   (mount-root))
 
 (defn ^:after-load after-load []

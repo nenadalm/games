@@ -4,7 +4,9 @@
    [reagent.core :as reagent]
    [app.events]
    [app.subs]
-   [app.components.layout :refer [layout]]))
+   [app.components.layout :refer [layout]]
+   [app.games.typing-race.core :refer [->TypingRace]]
+   [app.games.arkanoid.core :refer [->Arkanoid]]))
 
 (defn- canvas-ref [canvas]
   (re-frame/dispatch [:replace-canvas canvas])
@@ -66,10 +68,14 @@
 (def ^:private games
   {:typing-race {:title "Typing race"
                  :name :typing-race
-                 :content [typing-race-content]}
+                 :content [typing-race-content]
+                 :start (fn []
+                          (->TypingRace.))}
    :arkanoid {:title "[WIP]: Arkanoid"
               :name :arkanoid
-              :content [arkanoid-content]}})
+              :content [arkanoid-content]
+              :start (fn []
+                       (->Arkanoid.))}})
 
 (defn- render-game [game]
   [:<>
@@ -81,12 +87,30 @@
                :height "400px"
                :tab-index 1
                :style {:border "1px solid"}
-               :on-focus #(re-frame/dispatch [:game/resume (:name game)])
+               :on-focus #(re-frame/dispatch [:game/resume (:name game) ((:start game))])
                :on-blur #(re-frame/dispatch [:game/pause])
                :ref canvas-ref}]]
     [:div.column
      (:content game)]]])
 
+(defn- game-nav [game]
+  (let [current-page @(re-frame/subscribe [:page-name])]
+    [:li (cond-> {}
+           (= (:name game) current-page) (assoc :class "is-active"))
+     [:a {:on-click #(re-frame/dispatch [:open-page (:name game)])}
+      (:title game)]]))
+
+(defn- games-bar [games]
+  [:div.tabs
+   [:ul
+    (for [[_ game] games]
+      ^{:key (:name game)} [game-nav game])]])
+
 (defn app []
-  [layout
-   [render-game (:typing-race games)]])
+  (let [current-page @(re-frame/subscribe [:page-name])
+        game (games current-page)]
+    [layout
+     [:<>
+      [games-bar games]
+      (when game
+        [render-game game])]]))
