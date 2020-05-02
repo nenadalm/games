@@ -2,6 +2,7 @@
 goog.provide('app.math');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
+app.math.pi = 3.14;
 
 /**
  * @interface
@@ -677,7 +678,7 @@ return (((!((other13692 == null)))) && ((this13691__$1.constructor === other1369
 (app.math.Point2P.prototype.app$math$IntoPoint2$_into_point2$arity$1 = (function (this$){
 var self__ = this;
 var this$__$1 = this;
-return (new app.math.Point2(app.math._STAR_.cljs$core$IFn$_invoke$arity$2(self__.r,Math.cos(self__.phi)),app.math._STAR_.cljs$core$IFn$_invoke$arity$2(self__.r,Math.sin(self__.phi)),null,null,null));
+return (new app.math.Point2((self__.r * Math.cos(self__.phi)),(self__.r * Math.sin(self__.phi)),null,null,null));
 }));
 
 (app.math.Point2P.prototype.cljs$core$IMap$_dissoc$arity$2 = (function (this__4448__auto__,k__4449__auto__){
@@ -1255,6 +1256,12 @@ return this$__$1;
 (app.math.Point2.prototype.app$math$IntoVector2$_into_vector2$arity$1 = (function (this$){
 var this$__$1 = this;
 return (new app.math.Vector2(this$__$1.x,this$__$1.y,null,null,null));
+}));
+(app.math.Point2P.prototype.app$math$IntoVector2$ = cljs.core.PROTOCOL_SENTINEL);
+
+(app.math.Point2P.prototype.app$math$IntoVector2$_into_vector2$arity$1 = (function (this$){
+var this$__$1 = this;
+return app.math._into_vector2(this$__$1.app$math$IntoPoint2$_into_point2$arity$1(null));
 }));
 (app.math.Vector2.prototype.app$math$IntoPoint2$ = cljs.core.PROTOCOL_SENTINEL);
 
