@@ -28,7 +28,7 @@ taoensso.timbre.merge_config_BANG_(new cljs.core.PersistentArrayMap(null, 1, [cl
 window.addEventListener("error",(function (e){
 return taoensso.timbre._log_BANG_.cljs$core$IFn$_invoke$arity$10(taoensso.timbre._STAR_config_STAR_,cljs.core.cst$kw$error,"app.core",null,26,cljs.core.cst$kw$p,cljs.core.cst$kw$auto,(new cljs.core.Delay((function (){
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [e.error], null);
-}),null)),null,782785198);
+}),null)),null,-226160667);
 }));
 } else {
 }
@@ -36,6 +36,9 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 app.core.dev_setup();
 
 app.game_engine.init();
+
+var G__18099_18100 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$init], null);
+(re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1(G__18099_18100) : re_frame.core.dispatch_sync.call(null,G__18099_18100));
 
 return app.core.mount_root();
 });
