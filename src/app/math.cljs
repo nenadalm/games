@@ -70,7 +70,7 @@
 
 (defrecord Point2P [r phi]
   IntoPoint2
-  (-into-point2 [this]
+  (-into-point2 [_]
     (Point2. (clojure.core/* r (Math/cos phi))
              (clojure.core/* r (Math/sin phi)))))
 
@@ -83,8 +83,8 @@
             (update :x clojure.core/+ (:x v))
             (update :y clojure.core/+ (:y v))))
       (-> this
-            (update :x clojure.core/+ x)
-            (update :y clojure.core/+ x))))
+          (update :x clojure.core/+ x)
+          (update :y clojure.core/+ x))))
   Sub
   (-- [this x]
     (if (satisfies? IntoVector2 x)
@@ -93,18 +93,18 @@
             (update :x clojure.core/- (:x v))
             (update :y clojure.core/- (:y v))))
       (-> this
-            (update :x clojure.core/- x)
-            (update :y clojure.core/- x))))
+          (update :x clojure.core/- x)
+          (update :y clojure.core/- x))))
   Mul
   (-* [this x]
     (if (satisfies? IntoVector2 x)
       (let [v (-into-vector2 x)]
-          (-> this
-              (update :x clojure.core/* (:x v))
-              (update :y clojure.core/* (:y v))))
+        (-> this
+            (update :x clojure.core/* (:x v))
+            (update :y clojure.core/* (:y v))))
       (-> this
-              (update :x clojure.core/* x)
-              (update :y clojure.core/* x))))
+          (update :x clojure.core/* x)
+          (update :y clojure.core/* x))))
   Reflection
   (-reflection [this l]
     (let [vl (-into-vector2 l)]
@@ -147,9 +147,7 @@
 
   (into-vector2 1)
   (satisfies? IntoVector2 (Vector2. 1 2))
-  
+
   (* (Vector2. 2 2)
      (Vector2. 1 2))
-  (* (Vector2. 2 2) 2)
-
-  )
+  (* (Vector2. 2 2) 2))

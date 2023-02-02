@@ -24,7 +24,6 @@
              (- (* (- x1 x2) (- y3 y4)) (* (- y1 y2) (- x3 x4))))]
     (m/Point2. x y)))
 
-
 (defn update-ball [data delta]
   (let [ball-dir (:ball-dir data)
         ball-pos (:ball-pos data)
@@ -39,8 +38,8 @@
         update-pos (fn [wall-dir wall-line-segment]
                      (let [new-dir (m/reflection ball-dir wall-dir)
                            ip (intersection-point
-                                 (m/LineSegment. ball-pos requested-pos)
-                                 wall-line-segment)
+                               (m/LineSegment. ball-pos requested-pos)
+                               wall-line-segment)
                            new-movement (m/reflection (m/into-vector2 (m/- requested-pos ip)) wall-dir)
                            new-requested-pos (m/+ ball-pos new-movement)]
                        ;; todo: new-pos still not ok?

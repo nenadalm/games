@@ -1,6 +1,6 @@
 (ns app.timbre.appender.sentry
   (:require
-   [sentry]))
+   ["@sentry/browser" :as sentry]))
 
 (set! *warn-on-infer* true)
 

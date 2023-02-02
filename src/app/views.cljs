@@ -1,7 +1,6 @@
 (ns app.views
   (:require
    [re-frame.core :as re-frame]
-   [reagent.core :as reagent]
    [app.events]
    [app.subs]
    [app.components.layout :refer [layout]]

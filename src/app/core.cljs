@@ -1,4 +1,4 @@
-(ns ^:figwheel-hooks app.core
+(ns app.core
   (:require
    [reagent.dom :as reagent-dom]
    [re-frame.core :as re-frame]
@@ -29,5 +29,5 @@
   (re-frame/dispatch-sync [:init])
   (mount-root))
 
-(defn ^:after-load after-load []
+(defn ^:dev/after-load after-load []
   (mount-root))
